@@ -1,0 +1,63 @@
+.text {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.text-base {
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+
+.text-lg {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+}
+
+.text-3xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.flex {
+    display: flex;
+}
+
+.space-around {
+    justify-content: space-around;
+}
+
+.space-between {
+    justify-content: space-between;
+
+}
+
+.card-margin {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.pad-above {
+    padding-top: 10px;
+}
+
+.pad-above-md {
+    padding-top: 20px;
+}
+
+.pad-below {
+    padding-bottom: 10px;
+}

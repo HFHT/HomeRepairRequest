@@ -1,0 +1,11 @@
+.mantine-TextInput-label,
+.mantine-NumberInput-label,
+.mantine-Textarea-label,
+.mantine-Textarea-description,
+.mantine-Autocomplete-label {
+    display: flex !important;
+}
+
+.mantine-Checkbox-root {
+    margin-top: 8px;
+}

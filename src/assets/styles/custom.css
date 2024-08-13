@@ -1,0 +1,18 @@
+.csvlink {
+    color: var(--color-icon);
+}
+
+.pickphoneinput {
+    margin-left: unset;
+    font-size: large;
+    /* width: 90%; */
+    margin-top: 2px;
+}
+
+.pickphone {
+    margin-top: 0.8rem;
+}
+
+.special-label {
+    display: none;
+}
