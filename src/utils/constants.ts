@@ -1,0 +1,5 @@
+export const CONST_DB = 'HomeRepairApp'
+export const CONST_DB_ZIPCODES = 'ZipCodes'
+export const CONST_DB_QUESTIONS = 'Questions'
+export const CONST_DB_PROGRAMS = 'RepairPrograms'
+export const CONST_CITY = 'Tucson'

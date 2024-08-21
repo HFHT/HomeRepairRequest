@@ -10,8 +10,9 @@ import { App } from './App';
 import { StrictMode } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { TopLevelError } from './components';
-import(`//maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_APIKEY}&language=en&libraries=places&v=weekly`)
- 
+import { MainContextProvider } from './context/MainContext';
+// import(`//maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_APIKEY}&language=en&libraries=places&v=weekly`)
+
 const theme = createTheme({
   fontFamily: 'Montserrat, sans-serif',
   defaultRadius: 'md',
@@ -22,13 +23,16 @@ const theme = createTheme({
 });
 
 (async () => {
+  const props = { params: new URLSearchParams(window.location.search) }
   try {
     ReactDOM.createRoot(document.getElementById('root')!).render(
       <StrictMode >
         <ErrorBoundary FallbackComponent={TopLevelError} onError={() => console.log('Top Level Error Boundary')}>
-          <MantineProvider theme={theme}>
+          <MantineProvider theme={theme} forceColorScheme={window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'}>
             <BrowserRouter>
-              <App props={null} />
+              <MainContextProvider props={props}>
+                <App props={null} />
+              </MainContextProvider>
             </BrowserRouter>
           </MantineProvider>
         </ErrorBoundary>

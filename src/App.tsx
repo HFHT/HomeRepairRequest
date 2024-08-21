@@ -1,15 +1,21 @@
 import '@mantine/carousel/styles.css';
 import '@mantine/notifications/styles.css';
 import { Notifications, notifications } from '@mantine/notifications';
-import { AppShell, Box, Flex, Loader, LoadingOverlay, Text } from '@mantine/core';
+import { AppShell, Box, Flex, Loader, LoadingOverlay, Text, useMantineTheme } from '@mantine/core';
 import { RouterSwitcher } from './routes/RouterSwitcher';
 import { useBeforeUnload } from 'react-router-dom';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useOnline } from './hooks';
-import { Header, Navbar } from './components';
+import { Header } from './components';
+import { useMediaQuery } from '@mantine/hooks';
+import { MainContext } from './context/MainContext';
 
-export function App({ collections }: any) {
+export function App({ props }: any) {
   useBeforeUnload(() => { confirm('refreshing window') })
+  const theme = useMantineTheme()
+  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
+  const { state, dispatch, zipcodes, isBusy } = useContext(MainContext);
+
 
   const isOnline = useOnline({
     online: [() => { notifications.show({ color: 'green', title: '🛜 Network Restored', message: 'You are back online! ' }) }],
@@ -27,19 +33,19 @@ export function App({ collections }: any) {
   )
 
   return (
-    <div className="App" >
+    <div className="app" >
       <AppShell
-        header={{ height: 55 }}
+        header={{ height: mobile ? 50 : 75 }}
         navbar={{ width: 120, breakpoint: 'sm', collapsed: { mobile: !opened } }}
         padding="sm"
       >
-        <Header opened={opened} setOpened={(e: any) => setOpened(e)} />
-        <Navbar close={() => setOpened(false)} />
+        <Header />
         <AppShell.Main>
           <Notifications position="top-right" />
           <Box pos='relative'>
-            <LoadingOverlay visible={!isOnline} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{ children: <Offline /> }} />
-            <RouterSwitcher collections={collections} />
+            <LoadingOverlay visible={!isOnline} zIndex={1100} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{ children: <Offline /> }} />
+            <LoadingOverlay visible={isBusy} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+            <RouterSwitcher props={props} />
           </Box>
         </AppShell.Main>
         <AppShell.Footer zIndex={opened ? 'auto' : 201}>

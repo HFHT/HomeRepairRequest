@@ -1,0 +1,1 @@
+export type FormOtherType = {name:string, age: number, relationship: string}

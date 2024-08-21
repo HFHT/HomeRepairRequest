@@ -28,6 +28,10 @@
     line-height: 2.25rem;
 }
 
+.line-height-normal {
+    line-height: normal !important;
+}
+
 .hidden {
     display: none !important;
 }
@@ -60,4 +64,12 @@
 
 .pad-below {
     padding-bottom: 10px;
+}
+
+.pad-left {
+    padding-left: 10px;
+}
+
+.pad-left-md {
+    padding-left: 20px;
 }
