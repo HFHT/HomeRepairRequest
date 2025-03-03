@@ -68,3 +68,15 @@
 .table-label {
     font-size: var(--font-size)
 }
+
+.white-space-normal .mantine-Button-label {
+    white-space: normal;
+}
+
+.hfht-programs {
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 1rem;
+    /* margin: 1rem; */
+    /* gap: 1rem; */
+}

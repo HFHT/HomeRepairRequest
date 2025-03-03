@@ -45,6 +45,7 @@ export type PlacesResultAddressGeometryType = {
 
 export type GoogleAddressType = undefined | {
   place: GooglePlaceType[],
+  formatted: string,
   location: {
     lat: number,
     lng: number
@@ -55,4 +56,4 @@ export type GooglePlaceType = {
   shortText: string,
   types: GooglePlaceTypesType[]
 }
-export type GooglePlaceTypesType = 'street number' | 'route' | 'neighborhood' | 'political' | 'locality' | 'administrative_area_level_1' | 'administrative_area_level_2' | 'country' | 'postal_code' | 'postal_code_suffix'
+export type GooglePlaceTypesType = 'street_number' | 'route' | 'neighborhood' | 'political' | 'locality' | 'administrative_area_level_1' | 'administrative_area_level_2' | 'country' | 'postal_code' | 'postal_code_suffix'

@@ -6,27 +6,25 @@
 //Address
 import { useContext } from "react";
 import { Button, Space } from "@mantine/core";
-import { useNavigate } from "react-router-dom";
 import { Progress, Question } from "../components";
 import { MainContext } from "../context/MainContext";
 
 export function HomeInfo({ props }: any) {
-  const { state, isEligible, hasAnswseredQuestions, language, getPhrase } = useContext(MainContext);
-  const navigate = useNavigate();
+  const { state, isEligible, hasAnswseredQuestions, destination, navigate, getPhrase } = useContext(MainContext);
 
   const nextStep = () => {
     let q = ['OwnHome', 'haveIns', 'MfgHome']
     if (state.answers.MfgHome === 'yes') q.push('OwnLot')
     if (!hasAnswseredQuestions(q)) return
 
-    isEligible(['OwnHome', 'haveIns', 'MfgHome', 'OwnLot']) ? navigate('/income') : navigate('/noteligible')
+    isEligible(['OwnHome', 'haveIns', 'MfgHome', 'OwnLot']) ? navigate('Income') : navigate('NotEligible')
   }
-
+  if (destination !== 'HomeInfo') return <></>
   return (
     <>
       <Progress steps={[
-        { label: getPhrase('location'), color: 'cyan', size: 20 },
-        { label: getPhrase('homeInfo'), color: 'cyan', size: 20 }
+        { label: getPhrase('Location'), color: 'cyan', size: 20 },
+        { label: getPhrase('Home'), color: 'cyan', size: 20 }
       ]} />
       <Space h='md' />
 
@@ -35,7 +33,7 @@ export function HomeInfo({ props }: any) {
       <Question questionKey='MfgHome' show={true} />
       <Question questionKey='OwnLot' show={state.answers.MfgHome === 'yes'} />
 
-      <Button onClick={() => nextStep()}>{language === 'en' ? 'Proceed' : 'Proceder'}</Button>
+      <Button onClick={() => nextStep()}>{getPhrase('Proceed')}</Button>
     </>
   )
 }

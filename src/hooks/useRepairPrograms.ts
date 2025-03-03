@@ -11,12 +11,12 @@ export type useRepairPrograms = {
 export type RepairProgramsType = {
     _id: string | number,
     ProgramName: string,
-    Description: {en: string, es: string},
-    Eligible: {en:string, es:string},
-    NoFunds: {en:string, es:string},
+    Description: { en: string, es: string },
+    Eligible: { en: string, es: string },
+    NoFunds: { en: string, es: string },
     Active: boolean,
     Funding: boolean,
-    WaitTime: {en:string, es:string},
+    WaitTime: { en: string, es: string, value: number, unit: string },
     RepairTypes: string[],
     Qualifications: string[]
 }
@@ -30,7 +30,7 @@ export function useRepairPrograms() {
             setIsBusy(true)
             setRepairPrograms(
                 (
-                    await getMongoItem({ db: CONST_DB, collection: CONST_DB_PROGRAMS, query: {  } })
+                    await getMongoItem({ db: CONST_DB, collection: CONST_DB_PROGRAMS, query: {} })
                 )
             )
             setIsBusy(false)

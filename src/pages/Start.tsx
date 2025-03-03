@@ -1,56 +1,83 @@
-//Address
-import { useContext, useEffect, useState } from "react";
-import { Button, Space } from "@mantine/core";
-import { useNavigate } from "react-router-dom";
-import { GoogleAutocomplete, Progress, Question } from "../components";
+//Start
+import { useContext, useState } from "react";
+import { Button, Checkbox, List, Mark, Paper, SimpleGrid, Text, Title, useMantineTheme } from "@mantine/core";
 import { MainContext } from "../context/MainContext";
-import { CONST_CITY, getAddressComponent } from "../utils";
-import { GoogleAddressType } from "../types";
+import { legacyDBCreate } from "../services";
+import { useMediaQuery } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 
 export function Start({ props }: any) {
-  const { dispatch, zipcodes, isEligible, hasAnswseredQuestions, language, getPhrase, setInCity } = useContext(MainContext);
-  const [address, setAddress] = useState<GoogleAddressType | undefined>()
-  const navigate = useNavigate();
+  const { destination, navigate, getPhrase } = useContext(MainContext);
+  const theme = useMantineTheme()
+  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
+  const [acknowledgements, setAcknowledgements] = useState({ q1: false, q2: false, q3: false })
 
-  const isInCounty = () => {
-    if (address === undefined || address?.place === undefined) return false
-    return getAddressComponent(address.place, 'administrative_area_level_2') !== 'Pima County'
+  const canProceed = () => {
+    if (acknowledgements.q1 && acknowledgements.q2 && acknowledgements.q3) {
+      return true
+    }
+    notifications.show({ color: 'red', title: 'Please check all boxes!', message: 'To qualify you must acknowledge that you understand all three statements at the bottom of this page.', autoClose: 10000 })
+    return false
   }
-  const isInCity = () => {
-    if (address === undefined || address?.place === undefined) return false
-    let theZip = getAddressComponent(address.place, 'postal_code')
-    return zipcodes!.filter((zip) => zip.ZIP === theZip).length > 0
-  }
-
-  const nextStep = () => {
-    if (!address) return
-    let q = ['Emergency']
-    if (isInCity()) q.push('City')
-    if (isInCounty()) q.push('County')
-    if (!hasAnswseredQuestions(q)) return
-    setInCity(getAddressComponent(address.place, 'locality') === CONST_CITY)
-    isEligible(['County', 'Emergency']) ? navigate('/homeinfo') : navigate('/noteligible')
-  }
-
-  useEffect(() => {
-    setAddress(undefined)
-    dispatch({ type: 'reset' })
-  }, [])
-
+  if (destination !== 'Start') return <></>
   return (
     <>
-      <Progress steps={[{ label: getPhrase('location'), color: 'cyan', size: 20 }]} />
-      <Space h='md' />
-      <GoogleAutocomplete placeholder={language === 'en' ? 'Address...' : 'Dirección...'}
-        setAddress={(e: any) => {
-          setAddress(e)
-          dispatch({ type: 'address', payload: e })
-        }} />
-      <Question questionKey='County' show={isInCounty()} />
-      <Question questionKey='City' show={isInCity()} />
-      <Question questionKey='Emergency' show={!(address === undefined || address?.place === undefined)} />
+      <Paper shadow='xs' radius='sm' p='sm'>
+        <Text>
+          The home repair program ensures our neighbors live in safe, decent homes and restores dignity and hope to the
+          community. If selected you will work side-by-side with our staff and volunteers. Accommodations are made for those
+          unable to physically work. You are expected to repay a portion of cost of materials based on a sliding scale and ability.
+        </Text>
+        <Text mt='sm'>
+          We accept applicants whose homes need repair — individuals, seniors, people with disabilities, U.S. veterans,
+          multi-generational households and single-parent families. We <Mark color='red'>do not</Mark> provide emergency repairs. Habitat is an equal housing opportunity provider.
+        </Text>
+      </Paper>
+      <SimpleGrid cols={mobile ? 1 : 2} mt='lg'>
+        <Paper shadow="xs" radioGroup="sm" p="sm">
+          <Title order={3}>Critical Home Repair</Title>
+          <Text>Wait times maybe greater than 1 year.</Text>
+          <List size="sm">
+            <List.Item>AC Repair</List.Item>
+            <List.Item>AC Replacement</List.Item>
+            <List.Item>Electrical Safety Issues</List.Item>
+            <List.Item>Home Mobility Modification</List.Item>
+            <List.Item>Plumbing Safety Issues</List.Item>
+            <List.Item>Roof Replacement</List.Item>
+            <List.Item>Roofing Repair</List.Item>
+          </List>
+        </Paper>
+        <Paper shadow="xs" radioGroup="sm" p="sm">
+          <Title order={3}>Minor Home Repair</Title>
+          <Text>Home must be safe and have no roof leaks or structural problems.</Text>
+          <List size="sm">
+            <List.Item>Exterior Paint</List.Item>
+            <List.Item>Fence Repair</List.Item>
+            <List.Item>General Yard Clean up</List.Item>
+            <List.Item>Gutter Repair</List.Item>
+            <List.Item>Tree trimming up to 10 feet</List.Item>
+          </List>
+        </Paper>
+      </SimpleGrid>
 
-      <Button onClick={() => nextStep()}>{language === 'en' ? 'Proceed' : 'Proceder'}</Button>
+      <Checkbox
+        checked={acknowledgements.q1}
+        onChange={(e) => setAcknowledgements({ ...acknowledgements, q1: e.currentTarget.checked })}
+        label='I understand that Habitat for Humanity Tucson does NOT provide emergency repairs.'
+      />
+      <Checkbox
+        checked={acknowledgements.q2}
+        onChange={(e) => setAcknowledgements({ ...acknowledgements, q2: e.currentTarget.checked })}
+        label='I understand that I will work side by side with Habitat Staff and volunteers based on my ability.'
+      />
+      <Checkbox
+        checked={acknowledgements.q3}
+        onChange={(e) => setAcknowledgements({ ...acknowledgements, q3: e.currentTarget.checked })}
+        label='I understand that I will repay a portion of cost of materials based on a sliding scale and ability.'
+      />
+      <Button onClick={() => canProceed() && navigate('Address')}>{getPhrase('Proceed')}</Button>
+      <Button onClick={() => legacyDBCreate({ cLast: 'Hoffman', cFirst: 'Art', cPhone: '15209916545' }, false, true)
+      }>Send Test</Button>
     </>
   )
 }

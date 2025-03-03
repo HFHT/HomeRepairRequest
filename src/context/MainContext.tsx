@@ -1,6 +1,6 @@
-import { createContext, useEffect, useReducer } from "react";
+import { createContext, useEffect, useReducer, useState } from "react";
 import { useZipCodes } from "../hooks/useZipCodes";
-import { QuestionsType, useQuestions } from "../hooks";
+import { QuestionsType, useExitPrompt, useQuestions } from "../hooks";
 import { MainContextProviderType, MainContextStateType, MainContexType } from "../types";
 
 const initialState: MainContextStateType = {
@@ -16,6 +16,7 @@ const initialState: MainContextStateType = {
         eligible: true
     },
     answers: {},
+    selectedRepairs: [],
     notEligibleReason: []
 }
 export const MainContext = createContext<MainContexType>({
@@ -27,9 +28,12 @@ export const MainContext = createContext<MainContexType>({
     getUrlParam: () => { },
     setInCity: () => { },
     questions: [],
+    otherResouceURL: undefined,
     zipcodes: [],
     income: undefined,
     repairList: undefined,
+    destination: 'Start',
+    navigate: () => { },
     titles: undefined,
     language: 'en',
     isBusy: false,
@@ -49,11 +53,7 @@ const reducer = (state: MainContextStateType, action: { type: string, payload: a
         case "Income": return { ...state, answers: { ...state.answers, Income: action.payload } }
         case "Vet": return { ...state, answers: { ...state.answers, Vet: action.payload } }
         case "Over55": return { ...state, answers: { ...state.answers, Over55: action.payload } }
-        case "selectedRepairs": return { ...state, answers: { ...state.answers, selectedRepairs: action.payload } }
-
-
-
-
+        case "selectedRepairs": return { ...state, selectedRepairs: [...action.payload] }
         case "homeInfo": return { ...state, homeInfo: action.payload }
         case "notEligible": return { ...state, eligible: false }
         case "notEligibleReason": return { ...state, notEligibleReason: action.payload }
@@ -63,8 +63,10 @@ const reducer = (state: MainContextStateType, action: { type: string, payload: a
 export const MainContextProvider = (props: MainContextProviderType) => {
 
     const [state, dispatch] = useReducer(reducer, initialState)
+    const [destination, setDestination] = useState('Start')
     const [zipCodes, getZipCodes, isBusy] = useZipCodes()
-    const [questions, phrases, income, repairList, titles, getQuestions, isBusyQ] = useQuestions()
+    const [questions, phrases, income, repairList, titles, otherResouceURL, getQuestions, isBusyQ] = useQuestions()
+    const [showExitPrompt, setShowExitPrompt] = useExitPrompt(false)
 
     useEffect(() => {
         console.log(props.props.params.get('language'))
@@ -80,8 +82,6 @@ export const MainContextProvider = (props: MainContextProviderType) => {
         if (getUrlParam('language') === 'es') return 'es'
         return navigator.language.slice(0, 2).toLowerCase() === 'es' ? 'es' : 'en'
     }
-
-    getUrlParam('location') ? getUrlParam('location') : navigator.language.slice(0, 2).toLowerCase() === 'es' ? 'es' : 'en'
 
     const hasAnswseredQuestions = (keys: string[]) => {
         if (!questions) return false
@@ -116,8 +116,10 @@ export const MainContextProvider = (props: MainContextProviderType) => {
 
     const getPhrase = (phaseKey: string) => {
         if (!phrases) return ''
-        let retPhase = phrases[theLanguage() as keyof typeof phrases]
-        return retPhase[phaseKey as keyof typeof retPhase]
+        if (theLanguage() === 'en') return phaseKey
+        return phrases[phaseKey as keyof typeof phrases]
+        // let retPhase = phrases[theLanguage() as keyof typeof phrases]
+        // return retPhase[phaseKey as keyof typeof retPhase]
     }
 
     const setInCity = (isInCity: boolean) => {
@@ -125,7 +127,10 @@ export const MainContextProvider = (props: MainContextProviderType) => {
         if (Object.keys(state.answers).includes('City')) return
         dispatch({ type: 'City', payload: isInCity ? 'yes' : 'no' })
     }
-
+    const navigate = (dest: string) => {
+        !showExitPrompt && setShowExitPrompt(true)
+        setDestination(dest)
+    }
     return (
         <MainContext.Provider value={{
             state: state,
@@ -137,7 +142,10 @@ export const MainContextProvider = (props: MainContextProviderType) => {
             setInCity: setInCity,
             zipcodes: zipCodes,
             questions: questions,
+            otherResouceURL: otherResouceURL,
             repairList: repairList,
+            destination: destination,
+            navigate: navigate,
             titles: titles,
             income: income,
             language: theLanguage(),

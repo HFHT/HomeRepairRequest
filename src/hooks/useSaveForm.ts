@@ -1,53 +1,58 @@
-import { useState } from "react";
-import { getChatGPT, createMongoItem, sendEmail } from "../services";
-import { dateFormat, getAddressComponent } from "../utils";
+import { useContext, useState } from "react";
+import { createMongoItem, legacyDBCreate, sendEmail } from "../services";
+import { dateFormat, getAddressComponent, uniqueKey } from "../utils";
 import { useErrorBoundary } from "react-error-boundary";
+import { MainContext } from "../context/MainContext";
 
-const CONST_GPT_PROMPT = 'Parse this information into a list of items and quantities: {items}. Your response should be in the following JSON format: [  {    "prod": "Item 1", "qty": "Quantity 1"  }]'
 
 export function useSaveForm(noSave = false, callBack: () => void) {
+    const { state, language } = useContext(MainContext);
+
     const [isBusy, setIsBusy] = useState(false)
     const { showBoundary } = useErrorBoundary()
 
 
     const saveForm = async (values: any) => {
-        console.log('useSaveForm', values)
-        // setIsBusy(true)
-        // try {
-        //     // 3) Optionally, send email (fire and forget)
-        //     if (values.emailReceipt) {
-        //         sendEmail({
-        //             to: values.email,
-        //             subject: 'HabiStore donation receipt.',
-        //             noSend: false,
-        //             template: {
-        //                 db: 'HomeRepairApp', collection: 'Templates', template: 'HomeRepairInquiry'
-        //             },
-        //             replace: {
-        //                 DATE: values.date, TIME: '', NAME: `${values.firstName} ${values.lastName}`,
-        //                 ADDRESS: `${address.address1} ${address.address2}, ${address.city} ${address.province}`,
-        //                 LIST: values.donations, IMAGES: ''
-        //             }
-        //         })
-        //         console.log('eMailSend')
-        //     }
-        //     // 4) Save to MongoDB and Shopify
-        //     const responses = await Promise.all([
-        //         createMongoItem({
-        //             data: {
-        //                 ...customer, _id: values._id, shopifyId: values.shopifyId, date: values.date, email: values.email,
-        //                 newsletter: values.newsletter, emailReceipt: values.emailReceipt, list: itemList
-        //             }, db: 'Kiosk', collection: 'Donations', noSave: noSave
-        //         })
-        //     ])
-        //     console.log('mongo/shopify', responses)
+        console.log('useSaveForm', values, state, language)
+        setIsBusy(true)
+        try {
+            // send email (fire and forget)
+            if (state.address !== undefined) {
+                sendEmail({
+                    to: values.email,
+                    subject: 'HabiStore donation receipt.',
+                    // noSend: false,
+                    noSend: false,
+                    template: {
+                        db: 'HomeRepairApp', collection: 'Templates', template: 'HomeRepairInquiry'
+                    },
+                    replace: {
+                        DATE: values.date, TIME: '', NAME: `${values.firstName} ${values.lastName}`,
+                        ADDRESS: state.address.formatted,
+                        LIST: '', IMAGES: ''
+                    }
+                })
+                console.log('eMailSend')
+                // Save to MongoDB
+                const responses = await Promise.all([
+                    createMongoItem({
+                        data: { ...values, ...state, language: language, _id: `${values.phone}_${uniqueKey()}` },
+                        db: 'HomeRepairApp', collection: 'Inquiries', noSave: noSave
+                    }),
+                    legacyDBCreate({ ...values, ...state, language: language, _id: `${values.phone}_${uniqueKey()}` })
+                ])
+                console.log('mongo', responses)
 
-        //     // Cleanup
-        //     callBack()
-        // } catch (error) {
-        //     showBoundary(error)
-        // }
-        // setIsBusy(false)
+                // Cleanup
+                callBack()
+            } else {
+                showBoundary({ message: 'Street Address is undefined.' })
+            }
+
+        } catch (error) {
+            showBoundary(error)
+        }
+        setIsBusy(false)
     }
     return [saveForm, isBusy] as const
 }

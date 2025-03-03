@@ -42,6 +42,7 @@ export function useQuestions() {
     const [phrases, setPhrases] = useState<PhrasesType | undefined>()
     const [income, setIncome] = useState<IncomeType | undefined>()
     const [titles, setTitles] = useState<TitlesType | undefined>()
+    const [otherResouceURL, setOtherResouceURL] = useState<string | undefined>(undefined)
 
     const [repairList, setRepairList] = useState<RepairsType | undefined>()
     const [isBusy, setIsBusy] = useState(false)
@@ -57,16 +58,17 @@ export function useQuestions() {
             setIsBusy(true)
             const response = (await getMongoItem({ db: CONST_DB, collection: CONST_DB_QUESTIONS, query: {} }))[0]
             setQuestions(response.Questions)
-            setPhrases(response.Phrases)
+            setPhrases(response.PhrasesN)
             setIncome(response.Income)
             setRepairList(response.RepairList)
             setTitles(response.Titles)
+            setOtherResouceURL(response.OtherResourceURL)
             setIsBusy(false)
         } catch (error) {
             setIsBusy(false)
             showBoundary(error)
         }
     }
-    return [questions, phrases, income, repairList, titles, fetchMongo, isBusy] as const
+    return [questions, phrases, income, repairList, titles, otherResouceURL, fetchMongo, isBusy] as const
 
 }

@@ -5,7 +5,6 @@ import './assets/styles/custom.css'
 import '@mantine/core/styles.css';
 import ReactDOM from 'react-dom/client'
 import { createTheme, MantineProvider } from '@mantine/core';
-import { BrowserRouter } from 'react-router-dom';
 import { App } from './App';
 import { StrictMode } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -27,15 +26,13 @@ const theme = createTheme({
   try {
     ReactDOM.createRoot(document.getElementById('root')!).render(
       <StrictMode >
-        <ErrorBoundary FallbackComponent={TopLevelError} onError={() => console.log('Top Level Error Boundary')}>
-          <MantineProvider theme={theme} forceColorScheme={window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'}>
-            <BrowserRouter>
+        <MantineProvider theme={theme} forceColorScheme={window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'}>
+            <ErrorBoundary FallbackComponent={TopLevelError} onError={() => console.log('Top Level Error Boundary')}>
               <MainContextProvider props={props}>
                 <App props={null} />
               </MainContextProvider>
-            </BrowserRouter>
-          </MantineProvider>
-        </ErrorBoundary>
+            </ErrorBoundary>
+        </MantineProvider>
       </StrictMode>
     )
   }

@@ -2,17 +2,19 @@ import "intl-tel-input/styles";
 import { Box, Button, Container, Grid, Input, LoadingOverlay, NumberInput, Select, Stack, Text, TextInput, useMantineTheme } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { isEmail } from "../utils";
+import { useContext, useState } from "react";
+import { dateFormat, isEmail } from "../utils";
 //@ts-ignore
 import IntlTelInput from "intl-tel-input/reactWithUtils";
 import { FormOtherType } from "../types";
 import { useSaveForm } from "../hooks";
+import { MainContext } from "../context/MainContext";
 
 //-- Home Repair form
 export function RepairForm() {
-  const [saveForm, isBusy] = useSaveForm(false, () => { navigate('/thankyou') })
+  const { state, getPhrase, destination, navigate } = useContext(MainContext);
+
+  const [saveForm, isBusy] = useSaveForm(false, () => { navigate('ThankYou') })
   const [phone, setPhone] = useState<string>('')
   const [isPhoneValid, setIsPhoneValid] = useState(false)
   const [hasPhoneError, setHasPhoneError] = useState(false)
@@ -29,13 +31,12 @@ export function RepairForm() {
     { name: '', age: 0, relationship: '' },
 
   ])
-  const navigate = useNavigate();
   const theme = useMantineTheme()
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
 
   const form = useForm({
     mode: 'uncontrolled',
-    initialValues: { phone: '', firstName: '', lastName: '', midInitial: '', email: '', maritalStatus: '', others: [{}] },
+    initialValues: { address: state.address?.formatted, mailAddress: '', date: dateFormat(null), phone: '', firstName: '', lastName: '', email: '', maritalStatus: '', others: [{}] },
     validate: {
       email: (v) => isEmail(v) ? null : 'Please Provide an eMail.',
       firstName: (v) => v.length > 2 ? null : 'Please provide a First Name.',
@@ -56,9 +57,9 @@ export function RepairForm() {
     // setFormValues({ ...form.getValues(), phone: phone, others: others })
     saveForm({ ...form.getValues(), phone: phone, others: others })
   }
-
+  if (destination !== 'RepairForm') return <></>
   return (
-    <div>Home Repair Application Form
+    <div>{getPhrase('Home Repair Request Form')}
       <Box pos='relative'>
         <LoadingOverlay visible={isBusy} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
 
@@ -93,7 +94,7 @@ export function RepairForm() {
                   <TextInput size={size}
                     {...form.getInputProps('firstName')}
                     key={form.key('firstName')}
-                    label="First Name"
+                    label={getPhrase('First Name')}
 
                   />
                 </Grid.Col>
@@ -101,7 +102,7 @@ export function RepairForm() {
                   <TextInput size={size}
                     {...form.getInputProps('lastName')}
                     key={form.key('lastName')}
-                    label="Last Name"
+                    label={getPhrase('Last Name')}
 
                   />
                 </Grid.Col>
@@ -109,7 +110,7 @@ export function RepairForm() {
               <Select size={size}
                 {...form.getInputProps('maritalStatus')}
                 key={form.key('maritalStatus')}
-                label="What is your Marital Status?"
+                label={getPhrase("What is your Marital Status?")}
                 data={[
                   'Married',
                   'Widowed',
@@ -119,23 +120,27 @@ export function RepairForm() {
                 ]}
               />
               <TextInput disabled size={size}
-                {...form.getInputProps('address')}
-                key={form.key('address')}
-                label="Address"
+                value={state.address?.formatted}
+                label={getPhrase('Address')}
               />
               <TextInput size={size}
                 {...form.getInputProps('address2')}
                 key={form.key('address2')}
-                label="Apartment/Suite/Lot"
+                label={getPhrase('Apartment/Suite/Lot')}
                 placeholder="Apt #..."
+              />
+              <TextInput size={size}
+                {...form.getInputProps('mailAddress')}
+                key={form.key('mailAddress')}
+                label={'Mailing Address, if different than Home Repair Address'}
               />
             </form>
             <div>
-              <label className='table-label mantine-InputWrapper-label mantine-TextInput-label'>Others living in home</label>
+              <label className='table-label mantine-InputWrapper-label mantine-TextInput-label'>{getPhrase('Others living in home')}</label>
               <Grid grow gutter='xs'>
-                <Grid.Col span={4}><Text size={size}>Name</Text></Grid.Col>
-                <Grid.Col span={3}><Text size={size}>Age</Text></Grid.Col>
-                <Grid.Col span={5}><Text size={size}>Relationship</Text></Grid.Col>
+                <Grid.Col span={4}><Text size={size}>{getPhrase('Name')}</Text></Grid.Col>
+                <Grid.Col span={3}><Text size={size}>{getPhrase('Age')}</Text></Grid.Col>
+                <Grid.Col span={5}><Text size={size}>{getPhrase('Relationship')}</Text></Grid.Col>
               </Grid>
               < Grid grow gutter='xs'>
                 <Grid.Col span={4}><Input size='xs'
@@ -296,7 +301,7 @@ export function RepairForm() {
                 </Grid >
               }
             </div>
-            <Button mt='md' onClick={() => handleSave()}>Submit Application</Button>
+            <Button mt='md' className='white-space-normal' onClick={() => handleSave()}>{getPhrase('Submit Home Repair Request')}</Button>
           </Stack>
         </Container>
       </Box>

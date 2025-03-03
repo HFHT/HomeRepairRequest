@@ -2,6 +2,7 @@ export * from './fetchAll';
 // export * from './fetchControls';
 // export * from './fetchDays';
 export * from './fetchJson';
+export * from './fetchText';
 // export * from './fetchLocations';
 // export * from './fetchSchedule';
 // export * from './fetchSettings';

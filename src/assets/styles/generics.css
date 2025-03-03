@@ -73,3 +73,8 @@
 .pad-left-md {
     padding-left: 20px;
 }
+
+.border-left {
+    border-left: 1px solid white;
+    padding: 6px;
+}

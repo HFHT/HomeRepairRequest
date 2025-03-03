@@ -1,6 +1,7 @@
 //@ts-ignore
 import { APILoader, PlacePicker } from '@googlemaps/extended-component-library/react';
 import './../assets/styles/google.css'
+import { getAddressComponent } from '../utils';
 
 type GoogleAutocompleteType = {
   placeholder?: string
@@ -12,7 +13,8 @@ export function GoogleAutocomplete({ placeholder = 'Address...', countries = ['u
     console.log(e.target.value?.addressComponents)
     console.log(e.target.value?.location.lat(), e.target.value?.location.lng())
     console.log(e.target.value?.types)
-    setAddress({place:e.target.value?.addressComponents, location: {lat: e.target.value?.location.lat(), lng: e.target.value?.location.lng()}})
+    const addr = `${getAddressComponent(e.target.value?.addressComponents, 'street_number')} ${getAddressComponent(e.target.value?.addressComponents, 'route')}, ${getAddressComponent(e.target.value?.addressComponents, 'locality')}, ${getAddressComponent(e.target.value?.addressComponents, 'administrative_area_level_1', true)} ${getAddressComponent(e.target.value?.addressComponents, 'postal_code')}`
+    setAddress({ place: e.target.value?.addressComponents, formatted: addr, location: { lat: e.target.value?.location.lat(), lng: e.target.value?.location.lng() } })
   };
 
   return (

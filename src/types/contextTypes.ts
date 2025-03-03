@@ -1,5 +1,6 @@
 import { JSXElementConstructor, ReactElement, ReactFragment, ReactPortal } from "react"
 import { IncomeType, QuestionsType, RepairsType, TitlesType, ZipCodesType } from "../hooks"
+import { GoogleAddressType } from "."
 
 export type MainContexType = {
     state: MainContextStateType,
@@ -11,14 +12,17 @@ export type MainContexType = {
     setInCity: Function,
     zipcodes: ZipCodesType[] | undefined,
     questions: QuestionsType[] | undefined,
+    otherResouceURL: string | undefined,
     repairList: RepairsType | undefined,
     titles: TitlesType | undefined,
     income: IncomeType | undefined,
+    destination: string,
+    navigate: Function,
     language: 'en' | 'es',
     isBusy: boolean
 }
 export type MainContextStateType = {
-    address: string | undefined,
+    address: GoogleAddressType | undefined,
     responses: {
         Emergency: boolean,
         County: boolean,
@@ -30,6 +34,7 @@ export type MainContextStateType = {
         eligible: boolean
     }
     answers: { [key: string]: string },
+    selectedRepairs: string[],
     notEligibleReason: string[]
 }
 export type MainContextProviderType = {
