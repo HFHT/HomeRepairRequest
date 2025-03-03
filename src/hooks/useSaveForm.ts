@@ -20,7 +20,7 @@ export function useSaveForm(noSave = false, callBack: () => void) {
             if (state.address !== undefined) {
                 sendEmail({
                     to: values.email,
-                    subject: 'HabiStore donation receipt.',
+                    subject: 'Habitat for Humanity Tucson, Home Repair Application.',
                     // noSend: false,
                     noSend: false,
                     template: {

@@ -2,8 +2,6 @@
 
 Maintain state with back button?
 Log - create a browser profile key, store progress on each page. Store each attempt under that key.
-Pull question descriptions from the database, along with which answer is eligible (Y/N/null) null for either.
-
 
 Check to see if the address is already in the database, if so don't accept a new one:
 --- if it hasn't yet been started then ask what they want to change.
