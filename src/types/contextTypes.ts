@@ -1,5 +1,5 @@
 import { JSXElementConstructor, ReactElement, ReactFragment, ReactPortal } from "react"
-import { IncomeType, QuestionsType, RepairsType, TitlesType, ZipCodesType } from "../hooks"
+import { IncomeType, QuestionsType, RepairsType, RepairType, ZipCodesType } from "../hooks"
 import { GoogleAddressType } from "."
 
 export type MainContexType = {
@@ -8,21 +8,27 @@ export type MainContexType = {
     isEligible: Function,
     hasAnswseredQuestions: Function,
     getPhrase: Function,
-    getUrlParam: Function,
     setInCity: Function,
     zipcodes: ZipCodesType[] | undefined,
     questions: QuestionsType[] | undefined,
     otherResouceURL: string | undefined,
+    params: MainContextParamType | undefined,
     repairList: RepairsType | undefined,
-    titles: TitlesType | undefined,
+    programRepairs: RepairType[] | [],
     income: IncomeType | undefined,
     destination: string,
     navigate: Function,
     language: 'en' | 'es',
-    isBusy: boolean
+    mobile: boolean | undefined,
+    isBusy: boolean,
+    visit: any | undefined
 }
 export type MainContextStateType = {
     address: GoogleAddressType | undefined,
+    answers: { [key: string]: string },
+    notEligibleReason: string[],
+    program: 'CHR' | 'MHR' | undefined,
+    progressSteps: { label: string, color: string, size: number }[],
     responses: {
         Emergency: boolean,
         County: boolean,
@@ -33,11 +39,15 @@ export type MainContextStateType = {
         OwnLot: boolean,
         eligible: boolean
     }
-    answers: { [key: string]: string },
-    selectedRepairs: string[],
-    notEligibleReason: string[]
+    selectedRepairs: string[]
 }
 export type MainContextProviderType = {
     children: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined,
     props: any
+}
+export type MainContextParamType = {
+    pgm: string | boolean,
+    lang: 'es' | 'en' | false
+    nosave: boolean,
+    noemail: boolean
 }

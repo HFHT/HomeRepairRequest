@@ -1,3 +1,5 @@
+// NOT USED
+
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 var MongoClient = require('mongodb').MongoClient;
 
@@ -9,23 +11,24 @@ async function readMongoItem(request: HttpRequest, context: InvocationContext): 
         if (field === '') return defaultValue
         return JSON.parse(field)
     }
+    context.log('params', request.query.get('find'), request.query.get('sort'), request.query.get('limit'))
+    const client = new MongoClient(process.env.ATLAS_URI)
+    await client.connect()
     try {
-        context.log('params', request.query.get('find'), request.query.get('sort'), request.query.get('limit'))
-        const client = new MongoClient(process.env.ATLAS_URI)
-        await client.connect()
+        const data = await client.db(request.query.get('db'))
+            .collection(request.query.get('collection'))
+            .find(queryGet(request.query.get('find')))
+            .limit(queryGet(request.query.get('limit'), 10000))
+            .sort(queryGet(request.query.get('sort')))
+            .toArray()
+        await client.close()
         return {
             status: 200,
-            body: JSON.stringify(
-                await client.db(request.query.get('db'))
-                    .collection(request.query.get('collection'))
-                    .find(queryGet(request.query.get('find')))
-                    .limit(queryGet(request.query.get('limit'), 10000))
-                    .sort(queryGet(request.query.get('sort')))
-                    .toArray()
-            )
+            body: JSON.stringify(data)
         }
     } catch (error) {
         context.error(error)
+        await client.close()
         return { body: JSON.stringify({ err: true, error: error }), status: 501 }
     }
 };

@@ -6,7 +6,7 @@ import { useMediaQuery } from "@mantine/hooks";
 
 //Type of repairs
 export function Repairs() {
-  const { dispatch, repairList, isEligible, destination, navigate, language, getPhrase } = useContext(MainContext);
+  const { dispatch, repairList, programRepairs, isEligible, destination, navigate, language, getPhrase } = useContext(MainContext);
   const [selectedRepairs, setSelectedRepairs] = useState<string[]>([])
   const theme = useMantineTheme()
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
@@ -26,7 +26,7 @@ export function Repairs() {
     isEligible([]) ? navigate('Eligibility') : navigate('NotEligible')
   }
 
-  const rows = repairList?.Values.map((k) => (
+  const rows = programRepairs.map((k) => (
     <Table.Tr key={Object.keys(k)[0]} >
       <Table.Td>
         <Checkbox size={mobile ? 'xs' : 'md'} checked={selectedRepairs.includes(Object.keys(k)[0])} onChange={(e) => addRemoveRepairs(Object.keys(k)[0])} />
@@ -56,7 +56,10 @@ export function Repairs() {
         <Table.Tbody>{rows}</Table.Tbody>
       </Table>
       <Space h='md' />
-      <Button onClick={() => nextStep()}>{getPhrase('Proceed')}</Button>
+      <Button onClick={() => {
+        // dispatch({ type: 'Progress', payload: { label: getPhrase('Eligible'), color: 'green', size: 16 } })        
+        nextStep()
+        }}>{getPhrase('Proceed')}</Button>
       <Space h='lg' />
     </>
   )

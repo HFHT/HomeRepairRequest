@@ -1,10 +1,16 @@
-import { createContext, useEffect, useReducer, useState } from "react";
+import { createContext, useEffect, useMemo, useReducer, useState } from "react";
 import { useZipCodes } from "../hooks/useZipCodes";
-import { QuestionsType, useExitPrompt, useQuestions } from "../hooks";
-import { MainContextProviderType, MainContextStateType, MainContexType } from "../types";
+import { QuestionsType, useExitPrompt, useParams, useQuestions, useVisits } from "../hooks";
+import { MainContextParamType, MainContextProviderType, MainContextStateType, MainContexType } from "../types";
+import { useMantineTheme } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 
 const initialState: MainContextStateType = {
     address: undefined,
+    answers: {},
+    notEligibleReason: [],
+    program: undefined,
+    progressSteps: [],
     responses: {
         Emergency: false,
         County: true,
@@ -15,9 +21,7 @@ const initialState: MainContextStateType = {
         OwnLot: true,
         eligible: true
     },
-    answers: {},
-    selectedRepairs: [],
-    notEligibleReason: []
+    selectedRepairs: []
 }
 export const MainContext = createContext<MainContexType>({
     state: initialState,
@@ -25,18 +29,20 @@ export const MainContext = createContext<MainContexType>({
     isEligible: () => { },
     hasAnswseredQuestions: () => { },
     getPhrase: () => { },
-    getUrlParam: () => { },
     setInCity: () => { },
     questions: [],
     otherResouceURL: undefined,
+    params: undefined,
     zipcodes: [],
     income: undefined,
     repairList: undefined,
+    programRepairs: [],
     destination: 'Start',
     navigate: () => { },
-    titles: undefined,
     language: 'en',
+    mobile: false,
     isBusy: false,
+    visit: undefined
 })
 const reducer = (state: MainContextStateType, action: { type: string, payload: any }) => {
     console.log(action)
@@ -53,6 +59,8 @@ const reducer = (state: MainContextStateType, action: { type: string, payload: a
         case "Income": return { ...state, answers: { ...state.answers, Income: action.payload } }
         case "Vet": return { ...state, answers: { ...state.answers, Vet: action.payload } }
         case "Over55": return { ...state, answers: { ...state.answers, Over55: action.payload } }
+        case "Program": return { ...state, program: action.payload }
+        case "Progress": return { ...state, progressSteps: [...state.progressSteps, action.payload] }
         case "selectedRepairs": return { ...state, selectedRepairs: [...action.payload] }
         case "homeInfo": return { ...state, homeInfo: action.payload }
         case "notEligible": return { ...state, eligible: false }
@@ -61,25 +69,37 @@ const reducer = (state: MainContextStateType, action: { type: string, payload: a
     }
 }
 export const MainContextProvider = (props: MainContextProviderType) => {
+    const theme = useMantineTheme()
+    const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
 
     const [state, dispatch] = useReducer(reducer, initialState)
     const [destination, setDestination] = useState('Start')
+    const params: MainContextParamType = useParams(['pgm', 'nosave', 'noemail', 'lang'])
     const [zipCodes, getZipCodes, isBusy] = useZipCodes()
-    const [questions, phrases, income, repairList, titles, otherResouceURL, getQuestions, isBusyQ] = useQuestions()
+    const [questions, phrases, income, repairList, otherResouceURL, getQuestions, isBusyQ] = useQuestions()
     const [showExitPrompt, setShowExitPrompt] = useExitPrompt(false)
+    const { visit, putVisit } = useVisits()
 
     useEffect(() => {
-        console.log(props.props.params.get('language'))
         getZipCodes()
         getQuestions()
     }, [])
 
-    const getUrlParam = (paramKey: string) => {
-        return props.props.params.get(paramKey)
-    }
+    useEffect(() => {
+        if (!params) return
+        if (params.pgm) dispatch({ type: 'Program', payload: params.pgm })
+    }, [params])
+
+    const programRepairs = useMemo(() => {
+        if (!repairList || !state.program) return []
+        const theRepairs = repairList.Programs.find((p) => p.hasOwnProperty(state.program))
+        console.log('programRepairs-useMemo', theRepairs)
+        return theRepairs ? theRepairs[state.program] : []
+
+    }, [repairList, state.program])
 
     const theLanguage = (): 'es' | 'en' => {
-        if (getUrlParam('language') === 'es') return 'es'
+        if (params && params.lang === 'es') return 'es'
         return navigator.language.slice(0, 2).toLowerCase() === 'es' ? 'es' : 'en'
     }
 
@@ -138,18 +158,20 @@ export const MainContextProvider = (props: MainContextProviderType) => {
             isEligible: isEligible,
             hasAnswseredQuestions,
             getPhrase: getPhrase,
-            getUrlParam: getUrlParam,
             setInCity: setInCity,
             zipcodes: zipCodes,
+            params: params,
             questions: questions,
             otherResouceURL: otherResouceURL,
             repairList: repairList,
+            programRepairs: programRepairs,
             destination: destination,
             navigate: navigate,
-            titles: titles,
             income: income,
             language: theLanguage(),
-            isBusy: isBusy || isBusyQ
+            mobile: mobile,
+            isBusy: isBusy || isBusyQ,
+            visit: visit
         }}>
             {props.children}
         </MainContext.Provider>

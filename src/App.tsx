@@ -1,19 +1,15 @@
 import '@mantine/carousel/styles.css';
 import '@mantine/notifications/styles.css';
 import { Notifications, notifications } from '@mantine/notifications';
-import { AppShell, Box, Flex, Loader, LoadingOverlay, Text, useMantineTheme } from '@mantine/core';
+import { AppShell, Box, Flex, Loader, LoadingOverlay, Text } from '@mantine/core';
 import { useContext, useState } from 'react';
 import { useOnline } from './hooks';
 import { Header } from './components';
-import { useMediaQuery } from '@mantine/hooks';
 import { MainContext } from './context/MainContext';
 import { Main } from './pages';
 
 export function App({ props }: any) {
-  const theme = useMantineTheme()
-  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
-  const { state, dispatch, zipcodes, isBusy } = useContext(MainContext);
-
+  const { mobile, isBusy } = useContext(MainContext);
 
   const isOnline = useOnline({
     online: [() => { notifications.show({ color: 'green', title: '🛜 Network Restored', message: 'You are back online! ' }) }],

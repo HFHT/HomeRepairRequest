@@ -7,7 +7,7 @@ import { CONST_CITY, getAddressComponent } from "../utils";
 import { GoogleAddressType } from "../types";
 
 export function Address({ props }: any) {
-  const { dispatch, zipcodes, isEligible, hasAnswseredQuestions, destination, navigate, getPhrase, setInCity } = useContext(MainContext);
+  const { dispatch, state, zipcodes, isEligible, hasAnswseredQuestions, destination, navigate, getPhrase, setInCity, mobile } = useContext(MainContext);
   const [address, setAddress] = useState<GoogleAddressType | undefined>()
 
   const isInCounty = () => {
@@ -20,6 +20,10 @@ export function Address({ props }: any) {
     return zipcodes!.filter((zip) => zip.ZIP === theZip).length > 0
   }
 
+  const theProgram = () => {
+    if (mobile) return state.program === 'CHR' ? 'Critical' : 'Minor'
+    return state.program === 'CHR' ? 'Critical Repair' : 'Minor Repair'
+  }
   const nextStep = () => {
     if (!address) return
     let q = ['Emergency']
@@ -37,7 +41,7 @@ export function Address({ props }: any) {
   if (destination !== 'Address') return <></>
   return (
     <>
-      <Progress steps={[{ label: getPhrase('Location'), color: 'cyan', size: 20 }]} />
+      <Progress steps={[{ label: theProgram(), color: 'cyan', size: 20 }]} />
       <Space h='md' />
       <GoogleAutocomplete placeholder={`${getPhrase('Address')}...`}
         setAddress={(e: any) => {
@@ -48,7 +52,10 @@ export function Address({ props }: any) {
       <Question questionKey='City' show={isInCity()} />
       <Question questionKey='Emergency' show={!(address === undefined || address?.place === undefined)} />
 
-      <Button onClick={() => nextStep()}>{getPhrase('Proceed')}</Button>
+      <Button onClick={() => {
+        dispatch({ type: 'Progress', payload: { label: getPhrase('Home'), color: 'cyan', size: 14 } })
+        nextStep()
+      }}>{getPhrase('Proceed')}</Button>
     </>
   )
 }

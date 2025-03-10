@@ -5,7 +5,7 @@ import { MainContext } from "../context/MainContext";
 
 //Income
 export function Income() {
-  const { income, isEligible, hasAnswseredQuestions, destination, navigate, language, getPhrase } = useContext(MainContext);
+  const { dispatch, income, isEligible, hasAnswseredQuestions, destination, navigate, language, getPhrase } = useContext(MainContext);
 
   const nextStep = () => {
     if (!hasAnswseredQuestions(['Income'])) return
@@ -29,7 +29,10 @@ export function Income() {
       <Space h='md' />
 
       <Question questionKey='Income' show={true} />
-      <Button onClick={() => nextStep()}>{getPhrase('Proceed')}</Button>
+      <Button onClick={() => {
+        dispatch({ type: 'Progress', payload: { label: getPhrase('Other'), color: 'cyan', size: 14 } })
+        nextStep()
+      }}>{getPhrase('Proceed')}</Button>
       <Space h='lg' />
       <Text size='sm'>{income?.IncomeDesc[language]}</Text>
       <Table>

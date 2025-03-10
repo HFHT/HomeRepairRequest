@@ -22,13 +22,12 @@ const theme = createTheme({
 });
 
 (async () => {
-  const props = { params: new URLSearchParams(window.location.search) }
   try {
     ReactDOM.createRoot(document.getElementById('root')!).render(
       <StrictMode >
         <MantineProvider theme={theme} forceColorScheme={window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'}>
             <ErrorBoundary FallbackComponent={TopLevelError} onError={() => console.log('Top Level Error Boundary')}>
-              <MainContextProvider props={props}>
+              <MainContextProvider props={{ params: new URLSearchParams(window.location.search) }}>
                 <App props={null} />
               </MainContextProvider>
             </ErrorBoundary>

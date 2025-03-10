@@ -11,6 +11,7 @@ export type useRepairPrograms = {
 export type RepairProgramsType = {
     _id: string | number,
     ProgramName: string,
+    Type: 'MHR' | 'CHR',
     Description: { en: string, es: string },
     Eligible: { en: string, es: string },
     NoFunds: { en: string, es: string },

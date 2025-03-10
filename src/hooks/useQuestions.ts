@@ -29,19 +29,17 @@ export type IncomeValueType = {
 
 export type RepairsType = {
     RepairDesc: { en: string, es: string },
+    Programs: RepairType[],
     Values: RepairType[]
 }
 export type RepairType = {
     [key: string]: any
 }
-export type TitlesType = {
-    Eligible: { en: string, es: string }
-}
+
 export function useQuestions() {
     const [questions, setQuestions] = useState<QuestionsType[] | undefined>()
     const [phrases, setPhrases] = useState<PhrasesType | undefined>()
     const [income, setIncome] = useState<IncomeType | undefined>()
-    const [titles, setTitles] = useState<TitlesType | undefined>()
     const [otherResouceURL, setOtherResouceURL] = useState<string | undefined>(undefined)
 
     const [repairList, setRepairList] = useState<RepairsType | undefined>()
@@ -61,7 +59,6 @@ export function useQuestions() {
             setPhrases(response.PhrasesN)
             setIncome(response.Income)
             setRepairList(response.RepairList)
-            setTitles(response.Titles)
             setOtherResouceURL(response.OtherResourceURL)
             setIsBusy(false)
         } catch (error) {
@@ -69,6 +66,6 @@ export function useQuestions() {
             showBoundary(error)
         }
     }
-    return [questions, phrases, income, repairList, titles, otherResouceURL, fetchMongo, isBusy] as const
+    return [questions, phrases, income, repairList, otherResouceURL, fetchMongo, isBusy] as const
 
 }

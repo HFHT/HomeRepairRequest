@@ -7,7 +7,7 @@ import { MainContext } from "../context/MainContext";
 
 //Over 55
 export function MilitarySenior() {
-  const { isEligible, hasAnswseredQuestions, destination, navigate, getPhrase } = useContext(MainContext);
+  const { dispatch, isEligible, hasAnswseredQuestions, destination, navigate, getPhrase } = useContext(MainContext);
 
   const nextStep = () => {
     if (!hasAnswseredQuestions(['Vet', 'Over55'])) return
@@ -27,7 +27,10 @@ export function MilitarySenior() {
       <Question questionKey='Vet' show={true} />
       <Question questionKey='Over55' show={true} />
 
-      <Button onClick={() => nextStep()}>{getPhrase('Proceed')}</Button>
+      <Button onClick={() => {
+        dispatch({ type: 'Progress', payload: { label: getPhrase('Repairs'), color: 'cyan', size: 14 } })
+        nextStep()
+      }}>{getPhrase('Proceed')}</Button>
     </>
   )
 }

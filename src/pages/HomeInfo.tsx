@@ -10,7 +10,7 @@ import { Progress, Question } from "../components";
 import { MainContext } from "../context/MainContext";
 
 export function HomeInfo({ props }: any) {
-  const { state, isEligible, hasAnswseredQuestions, destination, navigate, getPhrase } = useContext(MainContext);
+  const { state, dispatch, isEligible, hasAnswseredQuestions, destination, navigate, getPhrase } = useContext(MainContext);
 
   const nextStep = () => {
     let q = ['OwnHome', 'haveIns', 'MfgHome']
@@ -33,7 +33,12 @@ export function HomeInfo({ props }: any) {
       <Question questionKey='MfgHome' show={true} />
       <Question questionKey='OwnLot' show={state.answers.MfgHome === 'yes'} />
 
-      <Button onClick={() => nextStep()}>{getPhrase('Proceed')}</Button>
+      <Button onClick={() => {
+        dispatch({ type: 'Progress', payload: { label: getPhrase('Income'), color: 'cyan', size: 14 } })
+        nextStep()
+      }}>
+        {getPhrase('Proceed')}
+      </Button>
     </>
   )
 }
