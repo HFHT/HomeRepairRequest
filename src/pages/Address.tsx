@@ -1,7 +1,7 @@
 //Address
 import { useContext, useEffect, useState } from "react";
-import { Button, Space } from "@mantine/core";
-import { GoogleAutocomplete, Progress, Question } from "../components";
+import { Button, Center, Paper, Stack, Text } from "@mantine/core";
+import { GoogleAutocomplete, Question } from "../components";
 import { MainContext } from "../context/MainContext";
 import { CONST_CITY, getAddressComponent } from "../utils";
 import { GoogleAddressType } from "../types";
@@ -26,12 +26,13 @@ export function Address({ props }: any) {
   }
   const nextStep = () => {
     if (!address) return
-    let q = ['Emergency']
+    let q = ['Emergency', 'Partner']
     if (isInCity()) q.push('City')
     if (isInCounty()) q.push('County')
     if (!hasAnswseredQuestions(q)) return
+    dispatch({ type: 'Progress', payload: { label: getPhrase('Home'), color: 'cyan', size: 14 } })
     setInCity(getAddressComponent(address.place, 'locality') === CONST_CITY)
-    isEligible(['County', 'Emergency']) ? navigate('HomeInfo') : navigate('NotEligible')
+    isEligible(['County', 'Emergency', 'Partner']) ? navigate('HomeInfo') : navigate('NotEligible')
   }
 
   useEffect(() => {
@@ -40,22 +41,26 @@ export function Address({ props }: any) {
   }, [])
   if (destination !== 'Address') return <></>
   return (
-    <>
-      <Progress steps={[{ label: theProgram(), color: 'cyan', size: 20 }]} />
-      <Space h='md' />
-      <GoogleAutocomplete placeholder={`${getPhrase('Address')}...`}
-        setAddress={(e: any) => {
-          setAddress(e)
-          dispatch({ type: 'address', payload: e })
-        }} />
-      <Question questionKey='County' show={isInCounty()} />
-      <Question questionKey='City' show={isInCity()} />
-      <Question questionKey='Emergency' show={!(address === undefined || address?.place === undefined)} />
-
-      <Button onClick={() => {
-        dispatch({ type: 'Progress', payload: { label: getPhrase('Home'), color: 'cyan', size: 14 } })
-        nextStep()
-      }}>{getPhrase('Proceed')}</Button>
-    </>
+    <Paper >
+      <Stack p='xs' gap='xs' align='stretch' justify='center'>
+        <Center mt='xs'>
+          <Stack gap={0}>
+            <Text>Property Address</Text>
+            <GoogleAutocomplete placeholder={`${getPhrase('Address')}...`}
+              setAddress={(e: any) => {
+                setAddress(e)
+                dispatch({ type: 'address', payload: e })
+              }} />
+          </Stack>
+        </Center>
+        <Question questionKey='County' show={isInCounty()} />
+        <Question questionKey='City' show={isInCity()} />
+        <Question questionKey='Emergency' show={!(address === undefined || address?.place === undefined)} />
+        <Question questionKey='Partner' show={!(address === undefined || address?.place === undefined)} />
+        <Button onClick={() => {
+          nextStep()
+        }}>{getPhrase('Proceed')}</Button>
+      </Stack>
+    </Paper>
   )
 }

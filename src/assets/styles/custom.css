@@ -65,6 +65,39 @@
     font-size: var(--input-error-size, calc(var(--mantine-font-size-sm) - calc(0.125rem* var(--mantine-scale))));
 }
 
+.pickphoneinput {
+    --input-padding: calc(var(--input-height) / 3);
+    --input-height: calc(2.25rem* var(--mantine-scale));
+    font-size: var(--mantine-font-size-sm);
+    color: var(--input-color);
+    width: 100%;
+    height: var(--input-height);
+    min-height: var(--input-height);
+    line-height: calc(var(--input-height) - calc(0.125rem* var(--mantine-scale)));
+    border-radius: var(--mantine-radius-default);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--mantine-color-dark-4);
+    appearance: none;
+    background-color: var(--mantine-color-dark-6);
+    padding-inline-start: calc(var(--input-padding)/2);
+    padding-inline-end: calc(var(--input-padding)/2);
+    cursor: pointer;
+    font-family: var(--input-font-family, var(--mantine-font-family));
+}
+
+.pickphoneinput:focus {
+    border-color: var(--mantine-primary-color-filled);
+    outline: none;
+}
+
+@media (prefers-color-scheme: light) {
+    .pickphoneinput {
+        border-color: var(--mantine-color-gray-4);
+        background-color: var(--mantine-color-white);
+    }
+}
+
 .table-label {
     font-size: var(--font-size)
 }

@@ -13,7 +13,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 #root {
-  width: 92%;
+  width: 100%;
   box-sizing: content-box;
 }
 a {

@@ -8,6 +8,7 @@ import { useMediaQuery } from "@mantine/hooks";
 const initialState: MainContextStateType = {
     address: undefined,
     answers: {},
+    eligiblePrograms: [],
     notEligibleReason: [],
     program: undefined,
     progressSteps: [],
@@ -51,7 +52,10 @@ const reducer = (state: MainContextStateType, action: { type: string, payload: a
         case "address": return { ...state, address: action.payload }
         case "County": return { ...state, answers: { ...state.answers, County: action.payload } }
         case "City": return { ...state, answers: { ...state.answers, City: action.payload } }
+        case "EligiblePrograms": return { ...state, eligiblePrograms: action.payload }
         case "Emergency": return { ...state, answers: { ...state.answers, Emergency: action.payload } }
+        case "Partner": return { ...state, answers: { ...state.answers, Partner: action.payload } }
+        case "Lien": return { ...state, answers: { ...state.answers, Lien: action.payload } }
         case "OwnHome": return { ...state, answers: { ...state.answers, OwnHome: action.payload } }
         case "haveIns": return { ...state, answers: { ...state.answers, haveIns: action.payload } }
         case "OwnLot": return { ...state, answers: { ...state.answers, OwnLot: action.payload } }
@@ -61,6 +65,7 @@ const reducer = (state: MainContextStateType, action: { type: string, payload: a
         case "Over55": return { ...state, answers: { ...state.answers, Over55: action.payload } }
         case "Program": return { ...state, program: action.payload }
         case "Progress": return { ...state, progressSteps: [...state.progressSteps, action.payload] }
+        case "ProgressReset": return { ...state, progressSteps: [action.payload] }
         case "selectedRepairs": return { ...state, selectedRepairs: [...action.payload] }
         case "homeInfo": return { ...state, homeInfo: action.payload }
         case "notEligible": return { ...state, eligible: false }

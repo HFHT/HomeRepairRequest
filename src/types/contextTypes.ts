@@ -27,6 +27,7 @@ export type MainContextStateType = {
     address: GoogleAddressType | undefined,
     answers: { [key: string]: string },
     notEligibleReason: string[],
+    eligiblePrograms: any[],
     program: 'CHR' | 'MHR' | undefined,
     progressSteps: { label: string, color: string, size: number }[],
     responses: {

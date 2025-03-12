@@ -30,7 +30,7 @@ export function App({ props }: any) {
     <div className="app" >
       <AppShell
         header={{ height: mobile ? 50 : 75 }}
-        navbar={{ width: 120, breakpoint: 'sm', collapsed: { mobile: !opened } }}
+        // navbar={{ width: 120, breakpoint: 'sm', collapsed: { mobile: !opened } }}
         padding="sm"
       >
         <Header />
@@ -44,7 +44,7 @@ export function App({ props }: any) {
         </AppShell.Main>
         <AppShell.Footer zIndex={opened ? 'auto' : 201}>
           <Flex justify="center">
-            <Text size="xs">Copyright<span>&copy;</span> Habitat for Humanity Tucson 2024</Text>
+            <Text size="xs">Copyright<span>&copy;</span> Habitat for Humanity Tucson 2025</Text>
           </Flex>
         </AppShell.Footer>
       </AppShell>

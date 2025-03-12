@@ -19,7 +19,9 @@ export type RepairProgramsType = {
     Funding: boolean,
     WaitTime: { en: string, es: string, value: number, unit: string },
     RepairTypes: string[],
-    Qualifications: string[]
+    Qualifications: string[],
+    Supplements: string[],
+    Lien: number | undefined
 }
 export function useRepairPrograms() {
     const [repairPrograms, setRepairPrograms] = useState<RepairProgramsType[] | undefined>()

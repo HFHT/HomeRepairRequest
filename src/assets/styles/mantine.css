@@ -9,3 +9,16 @@
 .mantine-Checkbox-root {
     margin-top: 8px;
 }
+
+.mantine-AppShell-main {
+    width: 100%;
+    background-image: url(https://hfhtdev.blob.core.windows.net/production/HOS_Form_Background_lg.png);
+    background-size: cover;
+    background-position: center;
+}
+
+@media screen and (max-device-width: 31.25em) {
+    .mantine-AppShell-main {
+        background-image: url(https://hfhtdev.blob.core.windows.net/production/HOS_Form_Background_sm.png);
+    }
+}
