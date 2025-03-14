@@ -14,7 +14,8 @@
     width: 100%;
     background-image: url(https://hfhtdev.blob.core.windows.net/production/HOS_Form_Background_lg.png);
     background-size: cover;
-    background-position: center;
+    background-repeat: no-repeat;
+    background-position: bottom right;
 }
 
 @media screen and (max-device-width: 31.25em) {

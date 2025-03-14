@@ -40,7 +40,8 @@ export type MainContextStateType = {
         OwnLot: boolean,
         eligible: boolean
     }
-    selectedRepairs: string[]
+    selectedRepairs: string[],
+    selectedRepairsDesc: string
 }
 export type MainContextProviderType = {
     children: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined,

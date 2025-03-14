@@ -11,7 +11,6 @@ import PhoneInput from "react-phone-input-2";
 //-- Home Repair form
 export function RepairForm() {
   const { state, getPhrase, destination, navigate } = useContext(MainContext);
-
   const [saveForm, isBusy] = useSaveForm(false, () => { navigate('ThankYou') })
   const [phone, setPhone] = useState<string>('')
   const [isPhoneValid, setIsPhoneValid] = useState(false)
@@ -31,6 +30,7 @@ export function RepairForm() {
   ])
   const theme = useMantineTheme()
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
+  const size = mobile ? 'xs' : 'md'
 
   const form = useForm({
     mode: 'uncontrolled',
@@ -42,8 +42,6 @@ export function RepairForm() {
       maritalStatus: (v) => v.length > 0 ? null : 'Please provide your marital status.'
     }
   })
-  const [formValues, setFormValues] = useState<typeof form.values | null>(null);
-  const size = mobile ? 'xs' : 'md'
 
   const showOther = (idx: number) => (((others.findLastIndex((o) => (o.name !== '' || o.relationship !== '')) + 1) > idx))
 
@@ -53,8 +51,9 @@ export function RepairForm() {
     console.log(form.isValid(), form.errors)
     if (!form.isValid()) return
     // setFormValues({ ...form.getValues(), phone: phone, others: others })
-    saveForm({ ...form.getValues(), phone: phone, others: others })
+    saveForm({ ...form.getValues(), phone: phone, others: others.filter((of) => of.name !== '') })
   }
+  
   if (destination !== 'RepairForm') return <></>
   return (
     <Center>

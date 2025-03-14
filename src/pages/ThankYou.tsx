@@ -17,22 +17,25 @@ export function ThankYou() {
             We will contact you to discuss how the application process works in greater detail.
           </Text>
           <Text size='sm'>
-            You have completed step 1 of the process. You will be contacted to fill out the application and provide
-            paperwork to:
+            You have completed step 1 of the process and will be added to the waitlist. 
+            Once you are next in line on the waitlist, you will be contacted to fill out the application and 
+            provide the following paperwork:
           </Text>
           <List size='sm'>
-            <List.Item>Verify your income</List.Item>
+            <List.Item>Income must be documented for all household members:</List.Item>
             <List withPadding size='xs'>
-              <List.Item>Current Driver’s License or AZ Identification Card for all residents, 18 and older</List.Item>
-              <List.Item>Most recent two months pay stubs for all members of the family, 18 and older</List.Item>
-              <List.Item>Most recent two months pay stubs for all members of the family, 18 and older</List.Item>
-              <List.Item>Award letters for pension, retirement, social security/disability Income for all household  members</List.Item>
-              <List.Item>Proof of child support income, if applicable</List.Item>
+              <List.Item>Current Driver’s License or AZ Identification Card (Applicant & Co-Applicant)</List.Item>
+              <List.Item>Social Security Card for each family member who lives in the home</List.Item>
+              <List.Item>Marriage license, divorce decree or legal separation document (when applicable)</List.Item>
+              <List.Item>Most recent 2 months of Bank Statement (all accounts and all pages)</List.Item>
+              <List.Item>Most recent 2 months of pay stubs for all family members aged 18 and older</List.Item>
+              <List.Item>Award letters for pension, retirement, social security/disability Income</List.Item>
+              <List.Item>Prior Year Federal Tax Returns (Signed and dated) & W-2s, 1099s</List.Item>
             </List>
-            <List.Item>Mortgage statement or deed of release</List.Item>
-            <List.Item>Proof of homeowners insurance</List.Item>
+            <List.Item>Proof of Homeownership – mortgage statement or deed of release</List.Item>
+            <List.Item>Proof of current homeowner’s insurance (declarations page or policy)</List.Item>
             {state && state.eligiblePrograms && state.eligiblePrograms.find((epf) => epf.ProgramName === CONST_VETERAN_PROGRAM) &&
-              <List.Item> Statement of Service or DD-214</List.Item>
+              <List.Item>DD-214 or statement of service</List.Item>
             }
           </List>
           <Text size='sm'>

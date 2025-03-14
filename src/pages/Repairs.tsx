@@ -1,11 +1,11 @@
 import { useContext, useState } from "react";
-import { Button, Checkbox, Paper, Space, Stack, Table, Text, useMantineTheme } from "@mantine/core";
+import { Button, Checkbox, Paper, Space, Stack, Table, Text, TextInput, useMantineTheme } from "@mantine/core";
 import { MainContext } from "../context/MainContext";
 import { useMediaQuery } from "@mantine/hooks";
 
 //Type of repairs
 export function Repairs() {
-  const { dispatch, repairList, programRepairs, isEligible, destination, navigate, language, getPhrase } = useContext(MainContext);
+  const { state, dispatch, repairList, programRepairs, isEligible, destination, navigate, language, getPhrase } = useContext(MainContext);
   const [selectedRepairs, setSelectedRepairs] = useState<string[]>([])
   const theme = useMantineTheme()
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
@@ -19,7 +19,7 @@ export function Repairs() {
     }
   }
   const nextStep = () => {
-    if (selectedRepairs.length === 0) return
+    if (selectedRepairs.length === 0 || state.selectedRepairsDesc === '') return
     dispatch({ type: 'selectedRepairs', payload: selectedRepairs })
     isEligible([]) ? navigate('Eligibility') : navigate('NotEligible')
   }
@@ -34,23 +34,29 @@ export function Repairs() {
   ))
   if (destination !== 'Repairs') return <></>
   return (
-      <Paper>
-        <Stack p='xs' gap='xs' align='stretch' justify='center'>
-          <Text size='sm'>{repairList?.RepairDesc[language]}</Text>
-          <Table>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>{getPhrase('Select')}</Table.Th>
-                <Table.Th>{getPhrase('Repair Type')}</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>{rows}</Table.Tbody>
-          </Table>
-          <Space h='md' />
-          <Button ml='xs' onClick={() => {
-            nextStep()
-          }}>{getPhrase('Proceed')}</Button>
-        </Stack>
-      </Paper>
+    <Paper>
+      <Stack p='xs' gap='xs' align='stretch' justify='center'>
+        <Text size='sm'>{repairList?.RepairDesc[language]}</Text>
+        <Table>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>{getPhrase('Select')}</Table.Th>
+              <Table.Th>{getPhrase('Repair Type')}</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+        <Space h='sm' />
+        <TextInput label='Please describe the repairs you are requesting' placeholder="Describe the repairs..."
+        required
+          value={state.selectedRepairsDesc}
+          onChange={(e) => dispatch({ type: 'selectedRepairsDesc', payload: e.target.value })}
+        />
+        <Space h='md' />
+        <Button ml='xs' onClick={() => {
+          nextStep()
+        }}>{getPhrase('Proceed')}</Button>
+      </Stack>
+    </Paper>
   )
 }

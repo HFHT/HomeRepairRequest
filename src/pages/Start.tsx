@@ -36,16 +36,16 @@ export function Start({ props }: any) {
             <Title order={3}>Critical Home Repair</Title>
             <Text>Wait times maybe greater than 1 year.</Text>
             <Flex>
-              <Text>Repairs over $15,000 may require a lien on your property.</Text>
+              <Text>A lien on your property may be required.</Text>
               <HoverCard width={mobile ? 220 : 300} shadow='md'>
                 <HoverCard.Target>
-                  <Badge size="xs" mt={3} circle color='gray'>
+                  <Badge size="sm" mt={3} circle color='gray'>
                     ?
                   </Badge>
                 </HoverCard.Target>
                 <HoverCard.Dropdown>
                   <Text size='xs'>
-                    Some of our Home Repair programs will require a lien to be placed on your home if the repair costs exceed $15,000.
+                    Some of our Home Repair programs will require a lien to be placed on your home.
                   </Text>
                   <Text size='xs' mt='xs'>
                     The only way to know is to start the Critical Home Repair request, you will be informed once your program eligibility has been determined.

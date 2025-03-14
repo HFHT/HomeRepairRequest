@@ -22,7 +22,8 @@ const initialState: MainContextStateType = {
         OwnLot: true,
         eligible: true
     },
-    selectedRepairs: []
+    selectedRepairs: [],
+    selectedRepairsDesc: ''
 }
 export const MainContext = createContext<MainContexType>({
     state: initialState,
@@ -67,6 +68,7 @@ const reducer = (state: MainContextStateType, action: { type: string, payload: a
         case "Progress": return { ...state, progressSteps: [...state.progressSteps, action.payload] }
         case "ProgressReset": return { ...state, progressSteps: [action.payload] }
         case "selectedRepairs": return { ...state, selectedRepairs: [...action.payload] }
+        case "selectedRepairsDesc": return {...state, selectedRepairsDesc: action.payload}
         case "homeInfo": return { ...state, homeInfo: action.payload }
         case "notEligible": return { ...state, eligible: false }
         case "notEligibleReason": return { ...state, notEligibleReason: action.payload }

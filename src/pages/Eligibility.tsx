@@ -1,18 +1,24 @@
 import { Badge, Box, Button, Card, Center, Divider, Group, LoadingOverlay, Paper, Space, Stack, Text, Title } from "@mantine/core";
 import { Question } from "../components";
-import { CONST_MAX_LIEN, useEligibility } from "../hooks";
+import { CONST_MAX_LIEN, RepairProgramsType, useEligibility } from "../hooks";
 
 //--Eligible Home Repair Programs
 export function Eligibility() {
 
   const { eligiblePrograms, destination, navigate, language, getPhrase, canProceed, isBusy } = useEligibility()
 
+  const badgeInfo = (thePgm: RepairProgramsType) => {
+    if (!thePgm.Funding) return { color: 'red', title: 'No Funds' }
+    if (thePgm.Supplements.length > 0) return { color: 'cyan', title: 'As-needed' }
+    return { color: thePgm.WaitTime.value < 6 ? "green" : 'yellow', title: thePgm.WaitTime.value < 6 ? "Available" : 'Long Wait' }
+  }
+
   const rows = () => (
     eligiblePrograms.programs.map((pgm) => (
       <Card key={pgm._id} shadow='sm' padding='sm' radius='md' withBorder>
         <Group justify="space-between" mt="md" mb="xs">
           <Text fw={500}>{pgm.Description[language]}</Text>
-          <Badge color={pgm.Funding ? (pgm.WaitTime.value < 6 ? "green" : 'yellow') : "pink"}>{pgm.Funding ? (pgm.WaitTime.value < 6 ? "Available" : 'Long Wait') : 'No Funds'}</Badge>
+          <Badge color={badgeInfo(pgm).color}>{badgeInfo(pgm).title}</Badge>
         </Group>
         <Text size="sm" c="dimmed">
           {pgm.Eligible[language]}
