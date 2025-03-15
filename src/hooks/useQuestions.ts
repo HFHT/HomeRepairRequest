@@ -7,6 +7,7 @@ import { MainContext } from "../context/MainContext"
 export type QuestionsType = {
     pass?: string | undefined,
     key: string,
+    altPgm?: string | undefined,
     q: { en: string, es: string },
     d: { en: string, es: string },
     r: { en: string, es: string }
@@ -28,9 +29,15 @@ export type IncomeValueType = {
 }
 
 export type RepairsType = {
+    Documents: DocumentsType[],
     RepairDesc: { en: string, es: string },
     Programs: RepairType[],
     Values: RepairType[]
+}
+export type DocumentsType = {
+    title: string,
+    inc: string[],
+    exc: string[]
 }
 export type RepairType = {
     [key: string]: any

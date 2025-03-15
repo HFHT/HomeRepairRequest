@@ -14,6 +14,7 @@ const initialState: MainContextStateType = {
     progressSteps: [],
     responses: {
         Emergency: false,
+        Safe: false,
         County: true,
         City: true,
         OwnHome: false,
@@ -38,6 +39,7 @@ export const MainContext = createContext<MainContexType>({
     zipcodes: [],
     income: undefined,
     repairList: undefined,
+    documents: undefined,
     programRepairs: [],
     destination: 'Start',
     navigate: () => { },
@@ -55,6 +57,7 @@ const reducer = (state: MainContextStateType, action: { type: string, payload: a
         case "City": return { ...state, answers: { ...state.answers, City: action.payload } }
         case "EligiblePrograms": return { ...state, eligiblePrograms: action.payload }
         case "Emergency": return { ...state, answers: { ...state.answers, Emergency: action.payload } }
+        case "Safe": return { ...state, answers: { ...state.answers, Safe: action.payload } }
         case "Partner": return { ...state, answers: { ...state.answers, Partner: action.payload } }
         case "Lien": return { ...state, answers: { ...state.answers, Lien: action.payload } }
         case "OwnHome": return { ...state, answers: { ...state.answers, OwnHome: action.payload } }
@@ -68,7 +71,7 @@ const reducer = (state: MainContextStateType, action: { type: string, payload: a
         case "Progress": return { ...state, progressSteps: [...state.progressSteps, action.payload] }
         case "ProgressReset": return { ...state, progressSteps: [action.payload] }
         case "selectedRepairs": return { ...state, selectedRepairs: [...action.payload] }
-        case "selectedRepairsDesc": return {...state, selectedRepairsDesc: action.payload}
+        case "selectedRepairsDesc": return { ...state, selectedRepairsDesc: action.payload }
         case "homeInfo": return { ...state, homeInfo: action.payload }
         case "notEligible": return { ...state, eligible: false }
         case "notEligibleReason": return { ...state, notEligibleReason: action.payload }
@@ -105,6 +108,23 @@ export const MainContextProvider = (props: MainContextProviderType) => {
 
     }, [repairList, state.program])
 
+    const documents = useMemo(() => {
+        if (!repairList || !state) return undefined
+        const eligiblePrograms = state.eligiblePrograms.map((em: any) => em.ProgramName)
+        console.log(eligiblePrograms)
+        //Get the documents with no inclusions
+        let theDocuments = repairList.Documents.filter((rdf) => rdf.inc.length === 0)
+        //Add the documents that are included in one of the eligible programs.
+        theDocuments = [
+            ...theDocuments,
+            ...repairList.Documents.filter((rdf) => eligiblePrograms.some((es: any) => rdf.inc.includes(es)))
+        ]
+        console.log(theDocuments)
+        theDocuments = theDocuments.filter((rdf) => !eligiblePrograms.some((es: any) => rdf.exc.includes(es)))
+        console.log(theDocuments)
+        return [...theDocuments]
+    }, [repairList, state.eligiblePrograms])
+
     const theLanguage = (): 'es' | 'en' => {
         if (params && params.lang === 'es') return 'es'
         return navigator.language.slice(0, 2).toLowerCase() === 'es' ? 'es' : 'en'
@@ -121,7 +141,7 @@ export const MainContextProvider = (props: MainContextProviderType) => {
     const isEligible = (keys: string[]) => {
         console.log(state.answers)
         let retVal: boolean[] = []
-        let retReasons: string[] = []
+        let retReasons: { title: string, altPgm: string | undefined }[] = []
         const passTest = (stateVal: string, answerVal: QuestionsType | undefined) => {
             console.log(stateVal, answerVal)
             if (!answerVal) return false
@@ -134,7 +154,7 @@ export const MainContextProvider = (props: MainContextProviderType) => {
             let theQuestion = questions.find((q: QuestionsType) => q.key === k)
             console.log(theQuestion)
             retVal = [...retVal, passTest(state.answers[k as keyof typeof state.answers], theQuestion)]
-            if (retVal[idx]) retReasons = [...retReasons, theQuestion!.r[theLanguage()]]
+            if (retVal[idx]) retReasons = [...retReasons, { title: theQuestion!.r[theLanguage()], altPgm: theQuestion!.altPgm }]
         })
         console.log(retVal, retVal.every(v => v === false), retReasons)
         retReasons.length > 0 && dispatch({ type: 'notEligibleReason', payload: retReasons })
@@ -162,6 +182,7 @@ export const MainContextProvider = (props: MainContextProviderType) => {
         <MainContext.Provider value={{
             state: state,
             dispatch: dispatch,
+            documents: documents,
             isEligible: isEligible,
             hasAnswseredQuestions,
             getPhrase: getPhrase,

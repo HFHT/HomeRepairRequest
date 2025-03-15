@@ -66,7 +66,7 @@ export function useEligibility() {
         if (eligiblePrograms.lien === CONST_MAX_LIEN) return 'RepairForm'
         if (state.answers.Lien === 'no') {
             const theReason = questions?.find((qf) => qf.key === 'Lien')
-            dispatch({ type: 'notEligibleReason', payload: [theReason?.d.en] })
+            dispatch({ type: 'notEligibleReason', payload: [{ title: theReason?.d.en, altPgm: theReason?.altPgm }] })
             return 'NotEligible'
         }
         if (state.answers.Lien === 'yes') return 'RepairForm'
@@ -79,7 +79,7 @@ export function useEligibility() {
         dispatch({ type: 'Progress', payload: { label: eligiblePrograms.title, color: eligiblePrograms.color, size: 16 } })
         dispatch({ type: 'EligiblePrograms', payload: eligiblePrograms.programs })
         if (eligiblePrograms.programs.length === 0) {
-            dispatch({ type: 'notEligibleReason', payload: [CONST_NO_PROGRAMS] })
+            dispatch({ type: 'notEligibleReason', payload: [{ title: CONST_NO_PROGRAMS, altPgm: undefined }] })
             navigate('NotEligible')
         }
     }, [destination, eligiblePrograms])

@@ -1,5 +1,5 @@
 import { JSXElementConstructor, ReactElement, ReactFragment, ReactPortal } from "react"
-import { IncomeType, QuestionsType, RepairsType, RepairType, ZipCodesType } from "../hooks"
+import { DocumentsType, IncomeType, QuestionsType, RepairsType, RepairType, ZipCodesType } from "../hooks"
 import { GoogleAddressType } from "."
 
 export type MainContexType = {
@@ -14,6 +14,7 @@ export type MainContexType = {
     otherResouceURL: string | undefined,
     params: MainContextParamType | undefined,
     repairList: RepairsType | undefined,
+    documents: DocumentsType[] | undefined,
     programRepairs: RepairType[] | [],
     income: IncomeType | undefined,
     destination: string,
@@ -26,12 +27,13 @@ export type MainContexType = {
 export type MainContextStateType = {
     address: GoogleAddressType | undefined,
     answers: { [key: string]: string },
-    notEligibleReason: string[],
+    notEligibleReason: { title: string, altPgm: string | undefined }[],
     eligiblePrograms: any[],
     program: 'CHR' | 'MHR' | undefined,
     progressSteps: { label: string, color: string, size: number }[],
     responses: {
         Emergency: boolean,
+        Safe: boolean,
         County: boolean,
         City: boolean,
         OwnHome: boolean,

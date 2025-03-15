@@ -6,7 +6,7 @@ import { MainContext } from "../context/MainContext";
 
 
 export function useSaveForm(noSave = false, callBack: () => void) {
-    const { state, language } = useContext(MainContext);
+    const { state, documents, language } = useContext(MainContext);
 
     const [isBusy, setIsBusy] = useState(false)
     const { showBoundary } = useErrorBoundary()
@@ -20,7 +20,7 @@ export function useSaveForm(noSave = false, callBack: () => void) {
             if (state.address !== undefined) {
                 sendEmail({
                     to: values.email,
-                    subject: 'Habitat for Humanity Tucson, Home Repair Application.',
+                    subject: 'Habitat for Humanity Tucson, Home Repair Inquiry.',
                     // noSend: false,
                     noSend: false,
                     template: {
@@ -29,7 +29,8 @@ export function useSaveForm(noSave = false, callBack: () => void) {
                     replace: {
                         DATE: values.date, TIME: '', NAME: `${values.firstName} ${values.lastName}`,
                         ADDRESS: state.address.formatted,
-                        LIST: '', IMAGES: ''
+                        LIST: `<ul compact> ${documents && documents.map((dm) => `<li>${dm.title}</li>`).join('')} </ul>`,
+                        IMAGES: ''
                     }
                 })
                 console.log('eMailSend')

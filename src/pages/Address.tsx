@@ -32,12 +32,12 @@ export function Address({ props }: any) {
     if (!hasAnswseredQuestions(q)) return
     dispatch({ type: 'Progress', payload: { label: getPhrase('Home'), color: 'cyan', size: 14 } })
     setInCity(getAddressComponent(address.place, 'locality') === CONST_CITY)
-    isEligible(['County', 'Emergency', 'Partner']) ? navigate('HomeInfo') : navigate('NotEligible')
+    isEligible(['Safe', 'County', 'Emergency', 'Partner']) ? navigate('HomeInfo') : navigate('NotEligible')
   }
 
   useEffect(() => {
     setAddress(undefined)
-    dispatch({ type: 'reset' })
+    // dispatch({ type: 'reset' })
   }, [])
   if (destination !== 'Address') return <></>
   return (
@@ -53,6 +53,7 @@ export function Address({ props }: any) {
               }} />
           </Stack>
         </Center>
+        <Question questionKey='Safe' show={state.program === 'MHR' && (!(address === undefined || address?.place === undefined))} />
         <Question questionKey='County' show={isInCounty()} />
         <Question questionKey='City' show={isInCity()} />
         <Question questionKey='Emergency' show={!(address === undefined || address?.place === undefined)} />
