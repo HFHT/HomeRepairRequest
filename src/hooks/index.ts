@@ -1,3 +1,4 @@
+export * from './useDownload'
 export * from './useEligibility'
 export * from './useExitPrompt'
 export * from './useFingerPrint'

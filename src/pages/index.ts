@@ -1,4 +1,5 @@
 export * from './Address'
+export * from './Downloads'
 export * from './Eligibility'
 export * from './HomeInfo'
 export * from './Income'

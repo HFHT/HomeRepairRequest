@@ -49,7 +49,7 @@ export function Eligibility() {
           {rows()}
           <Space h='md' />
           <Question questionKey='Lien' show={eligiblePrograms.lien !== CONST_MAX_LIEN} />
-          <Button ml='xs' onClick={() => nextStep()}>{getPhrase('Proceed to Application')}</Button>
+          <Button ml='xs' onClick={() => nextStep()}>{getPhrase('Proceed')}</Button>
         </Stack>
       </Paper>
     </Box>

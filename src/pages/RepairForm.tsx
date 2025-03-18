@@ -2,7 +2,7 @@ import { Box, Button, Center, Grid, Input, LoadingOverlay, NumberInput, Paper, S
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
 import { useContext, useState } from "react";
-import { dateFormat, isEmail } from "../utils";
+import { dateFormat, isEmail, isPhone } from "../utils";
 import { FormOtherType } from "../types";
 import { useSaveForm } from "../hooks";
 import { MainContext } from "../context/MainContext";
@@ -47,13 +47,13 @@ export function RepairForm() {
 
   const handleSave = () => {
     form.validate()
-    setHasPhoneError(!isPhoneValid)
+    setHasPhoneError(!isPhone(phone))
     console.log(form.isValid(), form.errors)
     if (!form.isValid()) return
     // setFormValues({ ...form.getValues(), phone: phone, others: others })
     saveForm({ ...form.getValues(), phone: phone, others: others.filter((of) => of.name !== '') })
   }
-  
+
   if (destination !== 'RepairForm') return <></>
   return (
     <Center>
@@ -63,13 +63,13 @@ export function RepairForm() {
           <Paper>
             <Stack p='xs' gap='xs' align='stretch' justify='center'>
               <Center>
-                <Title order={3}>{getPhrase('Home Repair Request Form')}</Title>
+                <Title order={3}>{getPhrase('Home Repair Inquiry Form')}</Title>
               </Center>
               <form >
                 <div key={form.key('phone')} className={hasPhoneError ? 'intl-phone-error' : ''}>
                   <Text mb={0} pb={0}>Phone</Text>
                   <PhoneInput country={'us'} value={phone} inputClass='pickphoneinput' placeholder='Phone'
-                    onChange={(p: any) => setPhone(p)}
+                    onChange={(p: any) => { setPhone(p); setHasPhoneError(!isPhone(p)); }}
                   />
                   {hasPhoneError && <p className='mantine-InputWrapper-error mantine-TextInput-error'>Please provide a phone number.</p>}
                 </div>
@@ -292,7 +292,7 @@ export function RepairForm() {
                   </Grid >
                 }
               </div>
-              <Button mt='md' mb='xs' className='white-space-normal' onClick={() => handleSave()}>{getPhrase('Submit Home Repair Request')}</Button>
+              <Button mt='md' mb='xs' className='white-space-normal' onClick={() => handleSave()}>{getPhrase('Submit Home Repair Inquiry')}</Button>
             </Stack>
           </Paper>
         </Box>

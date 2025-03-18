@@ -59,7 +59,7 @@ export function Start({ props }: any) {
                   <List.Item>Roofing Repair / Replacement</List.Item>
                 </List>
               </Paper>
-              <Button ml='sm' mr='sm' onClick={() => canProceed('CHR') && navigate('Address')}>{'Request Critical Home Repair'}</Button>
+              <Button ml='sm' mr='sm' onClick={() => canProceed('CHR') && navigate('Address')}>{'Select Critical Home Repair'}</Button>
             </div>
           }
           {state.program !== 'CHR' &&
@@ -92,7 +92,7 @@ export function Start({ props }: any) {
                   <List.Item>Tree trimming up to 10 feet</List.Item>
                 </List>
               </Paper>
-              <Button mt={mobile ? 0 : 25} ml='sm' mr='sm' onClick={() => canProceed('MHR') && navigate('Address')}>{'Request Minor Home Repair'}</Button>
+              <Button mt={mobile ? 0 : 25} ml='sm' mr='sm' onClick={() => canProceed('MHR') && navigate('Address')}>{'Select Minor Home Repair'}</Button>
             </div>
           }
         </SimpleGrid>

@@ -1,5 +1,7 @@
 # HomeRepairRequest
 
+Remove the Downloads page, if they like the downloads on the Thank You page.
+
 Inquiries DB - 
 add a browser signature.  
 

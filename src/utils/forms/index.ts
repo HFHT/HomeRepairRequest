@@ -1,5 +1,7 @@
 export * from './capitalize'
+export * from './cleanPhone'
 export * from './isEmail'
+export * from './isPhone'
 export * from './isZip'
 export * from './numberOrNull'
 export * from './stringOrBlank'

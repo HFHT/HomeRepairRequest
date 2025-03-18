@@ -1,6 +1,6 @@
 import { createContext, useEffect, useMemo, useReducer, useState } from "react";
 import { useZipCodes } from "../hooks/useZipCodes";
-import { QuestionsType, useExitPrompt, useParams, useQuestions, useVisits } from "../hooks";
+import { QuestionsType, RepairProgramDownloadType, RepairProgramsType, useExitPrompt, useParams, useQuestions, useVisits } from "../hooks";
 import { MainContextParamType, MainContextProviderType, MainContextStateType, MainContexType } from "../types";
 import { useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
@@ -31,6 +31,7 @@ export const MainContext = createContext<MainContexType>({
     dispatch: () => { },
     isEligible: () => { },
     hasAnswseredQuestions: () => { },
+    hasDownloads: [],
     getPhrase: () => { },
     setInCity: () => { },
     questions: [],
@@ -125,6 +126,14 @@ export const MainContextProvider = (props: MainContextProviderType) => {
         return [...theDocuments]
     }, [repairList, state.eligiblePrograms])
 
+    const hasDownloads: RepairProgramDownloadType[] = useMemo(() => {
+        console.log('hasDownloads', state.eligiblePrograms)
+        if (!state || !state.eligiblePrograms || state.eligiblePrograms.length === 0) return []
+        const programsWithDownloads = state.eligiblePrograms.filter((ef: RepairProgramsType) => ef.Downloads !== undefined)
+
+        return state.eligiblePrograms.filter((ef: RepairProgramsType) => ef.Downloads !== undefined).map((efm: RepairProgramsType) => efm.Downloads).flat()
+    }, [state.eligiblePrograms])
+
     const theLanguage = (): 'es' | 'en' => {
         if (params && params.lang === 'es') return 'es'
         return navigator.language.slice(0, 2).toLowerCase() === 'es' ? 'es' : 'en'
@@ -185,6 +194,7 @@ export const MainContextProvider = (props: MainContextProviderType) => {
             documents: documents,
             isEligible: isEligible,
             hasAnswseredQuestions,
+            hasDownloads: hasDownloads,
             getPhrase: getPhrase,
             setInCity: setInCity,
             zipcodes: zipCodes,

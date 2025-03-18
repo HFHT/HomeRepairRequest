@@ -13,6 +13,7 @@ export type RepairProgramsType = {
     ProgramName: string,
     Type: 'MHR' | 'CHR',
     Description: { en: string, es: string },
+    Downloads: RepairProgramDownloadType[] | [],
     Eligible: { en: string, es: string },
     NoFunds: { en: string, es: string },
     Active: boolean,
@@ -22,6 +23,11 @@ export type RepairProgramsType = {
     Qualifications: string[],
     Supplements: string[],
     Lien: number | undefined
+}
+export type RepairProgramDownloadType = {
+    title: string,
+    desc: string,
+    url: string
 }
 export function useRepairPrograms() {
     const [repairPrograms, setRepairPrograms] = useState<RepairProgramsType[] | undefined>()

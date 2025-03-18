@@ -12,7 +12,7 @@ export function Header() {
     <AppShell.Header>
       <Grid grow justify='space-between' align='center' className={mobile ? 'pad-left pad-above' : 'pad-left-md pad-above-md'}>
         <Grid.Col span={mobile ? 3 : 1}><div><Logo colorScheme={computedColorScheme} /></div></Grid.Col>
-        <Grid.Col span={mobile ? 7 : 9}><Title order={mobile ? 4 : 1} className='line-height-normal'>Home&nbsp;Repair Request</Title></Grid.Col>
+        <Grid.Col span={mobile ? 7 : 9}><Title order={mobile ? 4 : 1} className='line-height-normal'>Home&nbsp;Repair Inquiry</Title></Grid.Col>
       </Grid>
       <Progress steps={[]} />
     </AppShell.Header>

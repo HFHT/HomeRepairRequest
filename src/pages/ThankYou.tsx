@@ -1,12 +1,33 @@
-import { useContext } from "react";
+import { Fragment, useContext } from "react";
 import { MainContext } from "../context/MainContext";
-import { Center, List, Paper, Stack, Text, Title } from "@mantine/core";
+import { Button, Center, Divider, Grid, List, Paper, Stack, Text, Title } from "@mantine/core";
+import { useDownload } from "../hooks";
 
 export function ThankYou() {
-  const { documents, destination, mobile } = useContext(MainContext);
+  const { documents, destination, hasDownloads, mobile } = useContext(MainContext);
+  const { error, downloadFile } = useDownload();
 
   if (destination !== 'ThankYou') return <></>
-
+  const doDownload = (url: string) => {
+    downloadFile('ABWK_APP_2025.pdf', url)
+  }
+  const rows = () => hasDownloads.map((dm, idx) => (
+    <Fragment key={idx}>
+      <Grid.Col span={7}><Text size='sm'>{dm.desc}</Text></Grid.Col>
+      <Grid.Col span={3}>
+        <Button ml='md' mr='md' variant='light' onClick={() => doDownload(dm.url)}>{dm.title}</Button>
+      </Grid.Col>
+    </Fragment>
+  ))
+  const downloads = () => {
+    if (!hasDownloads || hasDownloads.length === 0) return (<></>)
+    return (
+      <>
+        <Divider />
+        <Grid>{rows()}</Grid>
+      </>
+    )
+  }
   return (
     <Center>
       <Paper w={mobile ? '100%' : '70%'}>
@@ -37,6 +58,7 @@ export function ThankYou() {
           <Text size='sm'>
             Please be aware Habitat for Humanity has limited resources so we can only partner with a small
             number of individuals every year. Thank you for understanding.</Text>
+          {downloads()}
         </Stack>
       </Paper>
     </Center>
