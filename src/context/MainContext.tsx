@@ -68,6 +68,7 @@ const reducer = (state: MainContextStateType, action: { type: string, payload: a
         case "Income": return { ...state, answers: { ...state.answers, Income: action.payload } }
         case "Vet": return { ...state, answers: { ...state.answers, Vet: action.payload } }
         case "Over55": return { ...state, answers: { ...state.answers, Over55: action.payload } }
+        case "Submit": return { ...state, answers: { ...state.answers, Submit: action.payload } }
         case "Program": return { ...state, program: action.payload }
         case "Progress": return { ...state, progressSteps: [...state.progressSteps, action.payload] }
         case "ProgressReset": return { ...state, progressSteps: [action.payload] }
@@ -89,7 +90,7 @@ export const MainContextProvider = (props: MainContextProviderType) => {
     const [zipCodes, getZipCodes, isBusy] = useZipCodes()
     const [questions, phrases, income, repairList, otherResouceURL, getQuestions, isBusyQ] = useQuestions()
     const [showExitPrompt, setShowExitPrompt] = useExitPrompt(false)
-    const { visit, putVisit } = useVisits()
+    const { visit, getVisit, putVisit } = useVisits()
 
     useEffect(() => {
         getZipCodes()
@@ -100,6 +101,30 @@ export const MainContextProvider = (props: MainContextProviderType) => {
         if (!params) return
         if (params.pgm) dispatch({ type: 'Program', payload: params.pgm })
     }, [params])
+
+    useEffect(() => {
+        if (!state || !state.progressSteps || !state.address || !state.address.formatted) return
+        console.log('visits-progress', state.progressSteps, visit)
+        putVisit({ ...state })
+    }, [state.progressSteps])
+
+    useEffect(() => {
+        if (!state || !state.address || !state.address.formatted || (state.eligiblePrograms.length === 0 && state.notEligibleReason === 0)) return
+        console.log('visits-eligibilty', state.eligiblePrograms, state.notEligibleReason, visit)
+        putVisit({ ...state })
+    }, [state.eligiblePrograms, state.notEligibleReason])
+
+    useEffect(() => {
+        if (!state || !state.answers || !('Submit' in state.answers)) return
+        console.log('visits-Submit', state.answers)
+        putVisit({ ...state })
+    }, [state.answers])
+
+    useEffect(() => {
+        if (!state.address) return
+        console.log('useEffect-state.address', state)
+        getVisit(state.address.formatted)
+    }, [state.address])
 
     const programRepairs = useMemo(() => {
         if (!repairList || !state.program) return []

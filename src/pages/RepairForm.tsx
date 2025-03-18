@@ -10,7 +10,7 @@ import PhoneInput from "react-phone-input-2";
 
 //-- Home Repair form
 export function RepairForm() {
-  const { state, getPhrase, destination, navigate } = useContext(MainContext);
+  const { state, dispatch, getPhrase, destination, navigate } = useContext(MainContext);
   const [saveForm, isBusy] = useSaveForm(false, () => { navigate('ThankYou') })
   const [phone, setPhone] = useState<string>('')
   const [isPhoneValid, setIsPhoneValid] = useState(false)
@@ -51,6 +51,7 @@ export function RepairForm() {
     console.log(form.isValid(), form.errors)
     if (!form.isValid()) return
     // setFormValues({ ...form.getValues(), phone: phone, others: others })
+    dispatch({ type: 'Submit', payload: true })
     saveForm({ ...form.getValues(), phone: phone, others: others.filter((of) => of.name !== '') })
   }
 
