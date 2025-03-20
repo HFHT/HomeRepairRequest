@@ -4,6 +4,10 @@ import { capitalize, getAddressComponent } from "../utils";
 export async function legacyDBCreate(obj: any, noSave: boolean = false, test = false) {
     console.log('legacyDBCreate', obj)
     var legacyFormat = { ...obj }
+    const programMapping = () => {
+        console.log(obj.eligiblePrograms)
+        return obj.eligiblePrograms.map((em: any) => em.ProgramName).toString()
+    }
     if (!test) {
         legacyFormat = {
             cLast: obj.lastName,
@@ -15,27 +19,28 @@ export async function legacyDBCreate(obj: any, noSave: boolean = false, test = f
             cAddrState: getAddressComponent(obj.address.place, 'administrative_area_level_1', true),
             cAddrZip: getAddressComponent(obj.address.place, 'postal_code'),
             cAptLot: obj.address2,
-            cMailAddr: '',
+            cMailAddr: obj.mailAddress,
+            cProgram: programMapping(),
+            cSex: 'Other',
             cPhone: obj.phone,
             cMaritalStatus: obj.maritalStatus,
             cEmail: obj.email,
-            cVet: obj.answers.Vet,
-            cAge55: obj.answers.Over55,
-            cProgram: '',
+            cVet: capitalize(obj.answers.Vet),
+            cAge55: capitalize(obj.answers.Over55),
             cResidents: obj.others.length > 0 ? obj.others.filter((of: any) => of.name !== '').map((om: any) => `${om.name} (${om.age}) - ${om.relationship}`).toString() : '',
-            cDetails: {
-                Hear: '',
-                Income: 'Yes',
-                MLot: 'Yes',
-                MPerm: 'Yes',
-                Labor: 'Yes',
-                Partner: 'Yes',
-                Own: 'Yes',
-                Primary: 'Yes',
-                Insurance: 'Yes',
-                Mobile: capitalize(obj.answers.MfgHome),
-            },
-            cRepairsReq: obj.selectedRepairs.toString()
+            // cDetails: {
+            //     Hear: 'Website',
+            //     Income: 'Yes',
+            //     MLot: 'Yes',
+            //     MPerm: 'Yes',
+            //     Labor: 'Yes',
+            //     Partner: 'Yes',
+            //     Own: 'Yes',
+            //     Primary: 'Yes',
+            //     Insurance: 'Yes',
+            //     Mobile: capitalize(obj.answers.MfgHome),
+            // },
+            cRepairsReq: `Programs: ${programMapping()} - Repairs: ${obj.selectedRepairs.toString()}; ${obj.selectedRepairsDesc}`
         }
     }
     console.log('legacyDBCreate', legacyFormat)
