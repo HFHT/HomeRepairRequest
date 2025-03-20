@@ -28,6 +28,7 @@ export async function legacyDBCreate(obj: any, noSave: boolean = false, test = f
             cVet: capitalize(obj.answers.Vet),
             cAge55: capitalize(obj.answers.Over55),
             cResidents: obj.others.length > 0 ? obj.others.filter((of: any) => of.name !== '').map((om: any) => `${om.name} (${om.age}) - ${om.relationship}`).toString() : '',
+            cDetails: `{"Hear":"Website","Own":"Yes","Primary":"Yes","Income":"Yes","Insurance":"Yes","Mobile":"${capitalize(obj.answers.MfgHome)}","MLot":"Yes","MPerm":"Yes","Labor":"Yes","Partner":"Yes"}`,
             // cDetails: {
             //     Hear: 'Website',
             //     Income: 'Yes',
