@@ -1,3 +1,5 @@
+//NOT USED
+
 import { useEffect, useState } from "react";
 import getBrowserFingerprint from 'get-browser-fingerprint';
 export function useFingerPrint() {

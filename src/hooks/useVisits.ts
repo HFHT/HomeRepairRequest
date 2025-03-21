@@ -1,9 +1,8 @@
-import { useContext, useEffect, useState } from "react"
-import { useFingerPrint } from "."
+import { useState } from "react"
 import { useErrorBoundary } from "react-error-boundary"
 import { getMongoItem, putMongoItem } from "../services"
 import { CONST_DB, CONST_DB_VISITS, uniqueKey } from "../utils"
-import { MainContext } from "../context/MainContext"
+import dayjs from "dayjs"
 
 type VisitsType = {
     _id: string,
@@ -17,20 +16,16 @@ type VisitType = {
     program: any
 }
 export function useVisits() {
-    const { state } = useContext(MainContext)
-    const { fingerPrint } = useFingerPrint()
     const [isBusy, setIsBusy] = useState(false)
     const { showBoundary } = useErrorBoundary()
     const [visit, setVisit] = useState<VisitsType | undefined>(undefined)
     const [sessionKey, setSessionKey] = useState<string | number | undefined>(uniqueKey())
 
     const getVisit = async (_id: string) => {
-        // if (!sessionKey) { console.warn('useVisits-no-fingerprint', sessionKey); return }
         try {
             setIsBusy(true)
             let thisVisit: VisitsType[] = await getMongoItem({ db: CONST_DB, collection: CONST_DB_VISITS, query: { _id: _id } })
             console.log(thisVisit)
-            // thisVisit = (!thisVisit || thisVisit.length === 0) ? [{ _id: _id, visits: [{ key: sessionKey, answers: { ...state.answers }, eligiblePrograms: state.eligiblePrograms, notEligibleReason: state.notEligibleReason, program: state.program }] }] : thisVisit
             setVisit(thisVisit[0])
             setIsBusy(false)
         } catch (error) {
@@ -44,6 +39,7 @@ export function useVisits() {
         let thisVisit = undefined
         let newSession = {
             key: sessionKey,
+            date: dayjs().format('YYYY-MM-DD HH:mm:ss'),
             answers: theState.answers,
             eligiblePrograms: theState.eligiblePrograms.map((em: any) => em._id),
             notEligibleReason: theState.notEligibleReason,
@@ -64,16 +60,11 @@ export function useVisits() {
                 }
                 thisSessionIdx = thisVisit.visits.findIndex((vf) => vf.key === sessionKey)
             }
-            // const thisSession = { ...thisVisit.visits[thisSessionIdx] }
             thisVisit.visits[thisSessionIdx] = { ...newSession }
         }
         setVisit(thisVisit)
         putMongoItem({ db: CONST_DB, collection: CONST_DB_VISITS, _id: thisVisit._id, data: { ...thisVisit } })
     }
-    // useEffect(() => {
-    //     if (!fingerPrint) return
-    //     getVisit()
-    // }, [fingerPrint])
 
-    return { visit, fingerPrint, getVisit, putVisit, isBusy } as const
+    return { visit, getVisit, putVisit, isBusy } as const
 }
