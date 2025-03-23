@@ -24,7 +24,7 @@ const theme = createTheme({
 (async () => {
   try {
     ReactDOM.createRoot(document.getElementById('root')!).render(
-      <StrictMode >
+      // <StrictMode >
         <MantineProvider theme={theme} forceColorScheme={window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'}>
             <ErrorBoundary FallbackComponent={TopLevelError} onError={() => console.log('Top Level Error Boundary')}>
               <MainContextProvider props={{ params: new URLSearchParams(window.location.search) }}>
@@ -32,7 +32,7 @@ const theme = createTheme({
               </MainContextProvider>
             </ErrorBoundary>
         </MantineProvider>
-      </StrictMode>
+      // </StrictMode>
     )
   }
   catch (e) {

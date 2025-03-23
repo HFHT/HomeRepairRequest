@@ -1,8 +1,10 @@
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useErrorBoundary } from "react-error-boundary"
-import { getMongoItem, putMongoItem } from "../services"
-import { CONST_DB, CONST_DB_VISITS, uniqueKey } from "../utils"
+import { getMongoItem, putMongoItem, putWebHits } from "../services"
+import { CONST_DB, CONST_DB_VISITS, CONST_DB_WEBHITS, uniqueKey } from "../utils"
 import dayjs from "dayjs"
+import { useFingerPrint } from "./useFingerPrint"
+import { MainContext } from "../context/MainContext"
 
 type VisitsType = {
     _id: string,
@@ -16,10 +18,13 @@ type VisitType = {
     program: any
 }
 export function useVisits() {
+    const { params } = useContext(MainContext)
     const [isBusy, setIsBusy] = useState(false)
     const { showBoundary } = useErrorBoundary()
     const [visit, setVisit] = useState<VisitsType | undefined>(undefined)
     const [sessionKey, setSessionKey] = useState<string | number | undefined>(uniqueKey())
+    const { fingerPrint } = useFingerPrint()
+
 
     const getVisit = async (_id: string) => {
         try {
@@ -65,6 +70,11 @@ export function useVisits() {
         setVisit(thisVisit)
         putMongoItem({ db: CONST_DB, collection: CONST_DB_VISITS, _id: thisVisit._id, data: { ...thisVisit } })
     }
+
+    useEffect(() => {
+        if (!fingerPrint) return
+        putWebHits({ db: CONST_DB, collection: CONST_DB_WEBHITS, _id: dayjs().format('YYYY-MM-DD'), data: { hits: { fingerPrint: fingerPrint, time: dayjs().format('HH:mm:ss') } }, noSave: params?.nosave })
+    }, [fingerPrint])
 
     return { visit, getVisit, putVisit, isBusy } as const
 }
