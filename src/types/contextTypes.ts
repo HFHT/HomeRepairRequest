@@ -23,6 +23,7 @@ export type MainContexType = {
     language: 'en' | 'es',
     mobile: boolean | undefined,
     isBusy: boolean,
+    fingerPrint: number | string | undefined,
     visit: any | undefined
 }
 export type MainContextStateType = {

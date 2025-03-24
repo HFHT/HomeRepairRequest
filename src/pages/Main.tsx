@@ -1,4 +1,4 @@
-import { Address, Downloads, Eligibility, HomeInfo, Income, MilitarySenior, NotEligible, RepairForm, Repairs, Start, ThankYou } from ".";
+import { Address, Eligibility, HomeInfo, Income, MilitarySenior, NotEligible, RepairForm, Repairs, Start, ThankYou } from ".";
 
 export function Main() {
     return (
@@ -11,7 +11,6 @@ export function Main() {
             <Repairs />
             <Eligibility />
             <RepairForm />
-            <Downloads />
             <NotEligible />
             <ThankYou />
         </>

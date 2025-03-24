@@ -1,6 +1,6 @@
 import { createContext, useEffect, useMemo, useReducer, useState } from "react";
 import { useZipCodes } from "../hooks/useZipCodes";
-import { QuestionsType, RepairProgramDownloadType, RepairProgramsType, useExitPrompt, useParams, useQuestions, useVisits } from "../hooks";
+import { QuestionsType, RepairProgramDownloadType, RepairProgramsType, useExitPrompt, useFingerPrint, useParams, useQuestions, useVisits } from "../hooks";
 import { MainContextParamType, MainContextProviderType, MainContextStateType, MainContexType } from "../types";
 import { useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
@@ -47,6 +47,7 @@ export const MainContext = createContext<MainContexType>({
     language: 'en',
     mobile: false,
     isBusy: false,
+    fingerPrint: undefined,
     visit: undefined
 })
 const reducer = (state: MainContextStateType, action: { type: string, payload: any }) => {
@@ -83,14 +84,14 @@ const reducer = (state: MainContextStateType, action: { type: string, payload: a
 export const MainContextProvider = (props: MainContextProviderType) => {
     const theme = useMantineTheme()
     const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
-
     const [state, dispatch] = useReducer(reducer, initialState)
     const [destination, setDestination] = useState('Start')
     const params: MainContextParamType = useParams(['pgm', 'nosave', 'noemail', 'lang'])
     const [zipCodes, getZipCodes, isBusy] = useZipCodes()
     const [questions, phrases, income, repairList, otherResouceURL, getQuestions, isBusyQ] = useQuestions()
     const [showExitPrompt, setShowExitPrompt] = useExitPrompt(false)
-    const { visit, getVisit, putVisit } = useVisits()
+    const { fingerPrint } = useFingerPrint()
+    const { visit, getVisit, putVisit, putWebHit } = useVisits()
 
     useEffect(() => {
         getZipCodes()
@@ -103,9 +104,15 @@ export const MainContextProvider = (props: MainContextProviderType) => {
     }, [params])
 
     useEffect(() => {
+        console.log('fingerPrint', fingerPrint)
+        if (!fingerPrint) return
+        putWebHit(fingerPrint)
+    }, [fingerPrint])
+
+    useEffect(() => {
         if (!state || !state.progressSteps || !state.address || !state.address.formatted) return
         console.log('visits-progress', state.progressSteps, visit)
-        putVisit({ ...state })
+        putVisit({ ...state, fingerprint: fingerPrint })
     }, [state.progressSteps])
 
     useEffect(() => {
@@ -154,8 +161,6 @@ export const MainContextProvider = (props: MainContextProviderType) => {
     const hasDownloads: RepairProgramDownloadType[] = useMemo(() => {
         console.log('hasDownloads', state.eligiblePrograms)
         if (!state || !state.eligiblePrograms || state.eligiblePrograms.length === 0) return []
-        const programsWithDownloads = state.eligiblePrograms.filter((ef: RepairProgramsType) => ef.Downloads !== undefined)
-
         return state.eligiblePrograms.filter((ef: RepairProgramsType) => ef.Downloads !== undefined).map((efm: RepairProgramsType) => efm.Downloads).flat()
     }, [state.eligiblePrograms])
 
@@ -199,8 +204,6 @@ export const MainContextProvider = (props: MainContextProviderType) => {
         if (!phrases) return ''
         if (theLanguage() === 'en') return phaseKey
         return phrases[phaseKey as keyof typeof phrases]
-        // let retPhase = phrases[theLanguage() as keyof typeof phrases]
-        // return retPhase[phaseKey as keyof typeof retPhase]
     }
 
     const setInCity = (isInCity: boolean) => {
@@ -234,6 +237,7 @@ export const MainContextProvider = (props: MainContextProviderType) => {
             language: theLanguage(),
             mobile: mobile,
             isBusy: isBusy || isBusyQ,
+            fingerPrint: fingerPrint,
             visit: visit
         }}>
             {props.children}

@@ -3,7 +3,6 @@ import { useErrorBoundary } from "react-error-boundary"
 import { getMongoItem, putMongoItem, putWebHits } from "../services"
 import { CONST_DB, CONST_DB_VISITS, CONST_DB_WEBHITS, uniqueKey } from "../utils"
 import dayjs from "dayjs"
-import { useFingerPrint } from "./useFingerPrint"
 import { MainContext } from "../context/MainContext"
 
 type VisitsType = {
@@ -23,7 +22,6 @@ export function useVisits() {
     const { showBoundary } = useErrorBoundary()
     const [visit, setVisit] = useState<VisitsType | undefined>(undefined)
     const [sessionKey, setSessionKey] = useState<string | number | undefined>(uniqueKey())
-    const { fingerPrint } = useFingerPrint()
 
 
     const getVisit = async (_id: string) => {
@@ -44,6 +42,7 @@ export function useVisits() {
         let thisVisit = undefined
         let newSession = {
             key: sessionKey,
+            fingerprint: theState.fingerprint,
             date: dayjs().format('YYYY-MM-DD HH:mm:ss'),
             answers: theState.answers,
             eligiblePrograms: theState.eligiblePrograms.map((em: any) => em._id),
@@ -70,11 +69,11 @@ export function useVisits() {
         setVisit(thisVisit)
         putMongoItem({ db: CONST_DB, collection: CONST_DB_VISITS, _id: thisVisit._id, data: { ...thisVisit } })
     }
-
-    useEffect(() => {
+    const putWebHit = async (fingerPrint: any) => {
+        console.log('fingerPrint', fingerPrint)
         if (!fingerPrint) return
-        putWebHits({ db: CONST_DB, collection: CONST_DB_WEBHITS, _id: dayjs().format('YYYY-MM-DD'), data: { hits: { fingerPrint: fingerPrint, time: dayjs().format('HH:mm:ss') } }, noSave: params?.nosave })
-    }, [fingerPrint])
+        putWebHits({ db: CONST_DB, collection: CONST_DB_WEBHITS, _id: dayjs().format('YYYY-MM-DD'), data: { hits: { fingerprint: fingerPrint, time: dayjs().format('HH:mm:ss') } }, noSave: params?.nosave })
+    }
 
-    return { visit, getVisit, putVisit, isBusy } as const
+    return { visit, getVisit, putVisit, putWebHit, isBusy } as const
 }
