@@ -1,10 +1,10 @@
 import { Fragment, useContext } from "react";
 import { MainContext } from "../context/MainContext";
-import { Button, Center, Divider, Grid, List, Paper, Stack, Text, Title } from "@mantine/core";
+import { Anchor, Button, Center, Divider, Grid, List, Paper, Stack, Text, Title } from "@mantine/core";
 import { useDownload } from "../hooks";
 
 export function ThankYou() {
-  const { documents, destination, hasDownloads, mobile } = useContext(MainContext);
+  const { state, documents, destination, hasDownloads, otherResouceURL, mobile } = useContext(MainContext);
   const { error, downloadFile } = useDownload();
 
   if (destination !== 'ThankYou') return <></>
@@ -21,12 +21,30 @@ export function ThankYou() {
   ))
   const downloads = () => {
     if (!hasDownloads || hasDownloads.length === 0) return (<></>)
+    if (state.eligiblePrograms.find(ep => ep.Funding === true)) {
+      return (
+        <>
+          <Divider />
+          <Grid>{rows()}</Grid>
+        </>
+      )
+    }
+    const minWaitTimeValue = Math.min(...state.eligiblePrograms.map(item => item.WaitTime.value));
     return (
       <>
         <Divider />
-        <Grid>{rows()}</Grid>
+        <Stack p='xs' gap='xs' align='stretch' justify='center'>
+          <Text >
+            We have a {minWaitTimeValue} month waiting list.
+          </Text>
+          <Text size='sm'>
+            To assist you further, we have provided a link to programs offered by other businesses that might better meet your needs.
+            You can explore these options here: <Anchor href={otherResouceURL} target='_blank'>Other Resources</Anchor>.
+          </Text>
+        </Stack>
       </>
     )
+
   }
   return (
     <Center>

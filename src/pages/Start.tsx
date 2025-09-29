@@ -34,7 +34,7 @@ export function Start({ props }: any) {
                 <Title order={3}>Critical Home Repair</Title>
                 <Text>Wait times maybe greater than 1 year.</Text>
                 <Flex>
-                  <Text>A lien on your property may be required.</Text>
+                  <Text size='sm'>A lien on your property may be required.</Text>
                   <HoverCard width={mobile ? 220 : 300} shadow='md'>
                     <HoverCard.Target>
                       <Badge size="sm" mt={3} circle color='gray'>
@@ -66,8 +66,9 @@ export function Start({ props }: any) {
             <div>
               <Paper shadow="xs" radioGroup="sm" p="sm">
                 <Title order={3}>Minor Exterior Home Repair</Title>
+                <Text>Wait times are currently greater than 10 months.</Text>
                 <Flex>
-                  <Text>Home must be safe and have no roof leaks or structural problems.</Text>
+                  <Text size='sm'>Home must be safe and have no roof leaks or structural problems.</Text>
                   <HoverCard width={mobile ? 220 : 300} shadow='md'>
                     <HoverCard.Target>
                       <Badge size="sm" mt={3} circle color='gray'>
@@ -92,7 +93,7 @@ export function Start({ props }: any) {
                   <List.Item>Tree trimming up to 10 feet</List.Item>
                 </List>
               </Paper>
-              <Button mt={mobile ? 0 : 25} ml='sm' mr='sm' onClick={() => canProceed('MHR') && navigate('Address')}>{'Select Minor Home Repair'}</Button>
+              <Button ml='sm' mr='sm' onClick={() => canProceed('MHR') && navigate('Address')}>{'Select Minor Home Repair'}</Button>
             </div>
           }
         </SimpleGrid>
