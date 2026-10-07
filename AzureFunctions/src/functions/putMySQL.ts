@@ -1,3 +1,4 @@
+/** @deprecated not used. */
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 const mysql = require('mysql');
 export async function putMySQL(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {

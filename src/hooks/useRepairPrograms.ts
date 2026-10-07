@@ -27,6 +27,7 @@ export type RepairProgramsType = {
 export type RepairProgramDownloadType = {
     title: string,
     desc: string,
+    displayName: string,
     url: string
 }
 export function useRepairPrograms() {

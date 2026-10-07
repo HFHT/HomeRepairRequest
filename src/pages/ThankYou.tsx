@@ -8,14 +8,14 @@ export function ThankYou() {
   const { error, downloadFile } = useDownload();
 
   if (destination !== 'ThankYou') return <></>
-  const doDownload = (url: string) => {
-    downloadFile('ABWK_APP_2025.pdf', url)
+  const doDownload = (filename: string, url: string) => {
+    downloadFile(filename, url)
   }
   const rows = () => hasDownloads.map((dm, idx) => (
     <Fragment key={idx}>
       <Grid.Col span={6}><Text size='sm'>{dm.desc}</Text></Grid.Col>
       <Grid.Col span={5}>
-        <Button ml='md' mr='md' variant='light' onClick={() => doDownload(dm.url)}>{dm.title}</Button>
+        <Button ml='md' mr='md' variant='light' onClick={() => doDownload(dm.displayName, dm.url)}>{dm.title}</Button>
       </Grid.Col>
     </Fragment>
   ))
