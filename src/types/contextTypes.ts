@@ -1,5 +1,5 @@
 import { JSXElementConstructor, ReactElement, ReactFragment, ReactPortal } from "react"
-import { DocumentsType, IncomeType, QuestionsType, RepairProgramDownloadType, RepairProgramsType, RepairsType, RepairType, ZipCodesType } from "../hooks"
+import { DocumentsType, IncomeType, QuestionsType, RepairProgramDownloadType, RepairProgramsType, RepairsType, RepairType, ThankYouHTMLType, ZipCodesType } from "../hooks"
 import { GoogleAddressType } from "."
 
 export type MainContexType = {
@@ -18,6 +18,7 @@ export type MainContexType = {
     documents: DocumentsType[] | undefined,
     programRepairs: RepairType[] | [],
     income: IncomeType | undefined,
+    thankYouHTML: ThankYouHTMLType | undefined,
     destination: string,
     navigate: Function,
     language: 'en' | 'es',

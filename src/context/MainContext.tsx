@@ -39,6 +39,7 @@ export const MainContext = createContext<MainContexType>({
     params: undefined,
     zipcodes: [],
     income: undefined,
+    thankYouHTML: undefined,
     repairList: undefined,
     documents: undefined,
     programRepairs: [],
@@ -88,7 +89,7 @@ export const MainContextProvider = (props: MainContextProviderType) => {
     const [destination, setDestination] = useState('Start')
     const params: MainContextParamType = useParams(['pgm', 'nosave', 'noemail', 'lang'])
     const [zipCodes, getZipCodes, isBusy] = useZipCodes()
-    const [questions, phrases, income, repairList, otherResouceURL, getQuestions, isBusyQ] = useQuestions()
+    const [questions, phrases, income, thankYouHTML, repairList, otherResouceURL, getQuestions, isBusyQ] = useQuestions()
     const [showExitPrompt, setShowExitPrompt] = useExitPrompt(false)
     const { fingerPrint } = useFingerPrint()
     const { visit, getVisit, putVisit, putWebHit } = useVisits()
@@ -234,6 +235,7 @@ export const MainContextProvider = (props: MainContextProviderType) => {
             destination: destination,
             navigate: navigate,
             income: income,
+            thankYouHTML: thankYouHTML,
             language: theLanguage(),
             mobile: mobile,
             isBusy: isBusy || isBusyQ,

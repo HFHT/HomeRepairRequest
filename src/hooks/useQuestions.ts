@@ -19,6 +19,10 @@ export type PhrasesType = {
 export type PhraseType = {
     title: string
 }
+export type ThankYouHTMLType = {
+    Prepend: string,
+    Append: string
+}
 export type IncomeType = {
     IncomeDesc: { en: string, es: string },
     Values: IncomeValueType[]
@@ -48,7 +52,7 @@ export function useQuestions() {
     const [phrases, setPhrases] = useState<PhrasesType | undefined>()
     const [income, setIncome] = useState<IncomeType | undefined>()
     const [otherResouceURL, setOtherResouceURL] = useState<string | undefined>(undefined)
-
+    const [thankYouHTML, setThankYouHTML] = useState<ThankYouHTMLType | undefined>(undefined)
     const [repairList, setRepairList] = useState<RepairsType | undefined>()
     const [isBusy, setIsBusy] = useState(false)
     const { showBoundary } = useErrorBoundary()
@@ -65,6 +69,7 @@ export function useQuestions() {
             setQuestions(response.Questions)
             setPhrases(response.PhrasesN)
             setIncome(response.Income)
+            setThankYouHTML(response.ThankYou)
             setRepairList(response.RepairList)
             setOtherResouceURL(response.OtherResourceURL)
             setIsBusy(false)
@@ -73,6 +78,6 @@ export function useQuestions() {
             showBoundary(error)
         }
     }
-    return [questions, phrases, income, repairList, otherResouceURL, fetchMongo, isBusy] as const
+    return [questions, phrases, income, thankYouHTML, repairList, otherResouceURL, fetchMongo, isBusy] as const
 
 }

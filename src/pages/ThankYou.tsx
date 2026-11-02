@@ -1,13 +1,19 @@
 import { Fragment, useContext } from "react";
 import { MainContext } from "../context/MainContext";
-import { Anchor, Button, Center, Divider, Grid, List, Paper, Stack, Text, Title } from "@mantine/core";
+import { Anchor, Button, Center, Divider, Grid, List, Paper, Stack, Text, Title, TypographyStylesProvider } from "@mantine/core";
 import { useDownload } from "../hooks";
 
 export function ThankYou() {
-  const { state, documents, destination, hasDownloads, otherResouceURL, mobile } = useContext(MainContext);
+  const { state, documents, destination, hasDownloads, thankYouHTML, otherResouceURL, mobile } = useContext(MainContext);
   const { error, downloadFile } = useDownload();
 
   if (destination !== 'ThankYou') return <></>
+  if (!thankYouHTML) return
+  <>
+    <h3>Something unexpected happened!</h3>
+    <p>Please let us know that a failure to fetch the Thank You statements has happened by sending an email to:</p>
+    <p>ITSupport@habitattucson.org</p>
+  </>
   const doDownload = (filename: string, url: string) => {
     downloadFile(filename, url)
   }
@@ -50,7 +56,7 @@ export function ThankYou() {
     <Center>
       <Paper w={mobile ? '100%' : '70%'}>
         <Stack p='xs' gap='xs' align='stretch' justify='center'>
-          <Center>
+          {/* <Center>
             <Title order={3}>Thank You</Title>
           </Center>
           <Text>We have received your Home Repair inquiry.
@@ -63,19 +69,26 @@ export function ThankYou() {
           </Text>
           <Text size='sm' mt='xs'>
             Income must be documented for all household members:
-          </Text>
+          </Text> */}
+          <TypographyStylesProvider>
+            <div dangerouslySetInnerHTML={{ __html: thankYouHTML.Prepend }} />
+          </TypographyStylesProvider>
           <List size='sm'>
             {documents && documents.map((dm, idx) => (
               <List.Item key={idx}>{dm.title}</List.Item>
             ))}
           </List>
-          <Text size='sm'>
+          <TypographyStylesProvider>
+            <div dangerouslySetInnerHTML={{ __html: thankYouHTML.Append }} />
+          </TypographyStylesProvider>
+          {/* <Text size='sm'>
             Eligible homeowners whose applications are
             accepted get a home visit from a Habitat Tucson staffer to assess what work must be done.
           </Text>
           <Text size='sm'>
             Please be aware Habitat for Humanity has limited resources so we can only partner with a small
-            number of individuals every year. Thank you for understanding.</Text>
+            number of individuals every year. Thank you for understanding.
+          </Text> */}
           {downloads()}
         </Stack>
       </Paper>
